@@ -93,6 +93,6 @@ L_NoMoney:
 
 L_TooMany:
     mes "[Melinda]";
-    mes "\"You don't have room for a beer!\"";
+    mes "\"You don't have room for anything else!\"";
     close;
 }
