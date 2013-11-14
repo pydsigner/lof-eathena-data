@@ -2,19 +2,19 @@
 
 009-2.gat,181,56,0|script|Cerhan|311,{
     mes "[Cerhan]";
-    mes "\"Ah, hello! It is good to see another person in this different town!\"";
+    mes "\"Ah, hello! It is good to see another person who is not from this strange town!\"";
     next;
     menu
         "Really? Where are you from?",L_Story,
-        "It's good to see you too, do you happen to be able to make stuff?",L_makestuff,
+        "It's good to see you too. Would you happen to be able to make stuff?",L_makestuff,
         "Alright.",-;
     goto L_Close;
 
 L_Story:
     mes "[Cerhan]";
-    mes "\"I came from Thermin, a town in Kazei area.\"";
+    mes "\"I came from Thermin, a town in the Kazei area.\"";
     next;
-    mes "\"I'm an experienced weapon master and helping this smithy here, I am new in this town. I am best experienced in smithing armor.\"";
+    mes "\"I'm an experienced weapon master; I recently arrived to help this smithy here. I am best at smithing armor.\"";
     next;
     if (countitem("MylarinDust") > 0)
         menu
