@@ -8,6 +8,7 @@
     set @CUTFUR_EXP, 10;
     set @FINEDRESS_COTTON_CLOTHS, 20;
     set @FINEDRESS_GP, 20000;
+    set @FINEDRESS_EXP, 60000;
 
     if (QUEST_WG_state == 1) goto L_State_0_3;
     if (QUEST_WG_state == 2) goto L_State_1;
@@ -576,6 +577,7 @@ L_State_17_BuyDress:
         goto L_State_17_InventoryFull;
 
     set Zeny, Zeny - @FINEDRESS_GP;
+    getexp @FINEDRESS_EXP, 0;
     getitem "FineDress", 1;
     set QUEST_WG_state, 23;
 
