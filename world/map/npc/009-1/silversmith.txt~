@@ -131,7 +131,7 @@ L_Full:
 
 L_Missing:
     mes "[Smith Silvers]";
-    mes "\"It looks like you're missing some items.  Please come back when you have what I need!\"";
+    mes "\"It looks like you're missing some items.  Please come back when you have what i need!\"";
     goto L_Close;
 
 L_NotEnoughMoney:

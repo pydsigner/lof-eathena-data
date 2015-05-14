@@ -2,10 +2,10 @@
 
 009-2.gat,110,44,0|script|The Doctor|184,{
 
-    if (BaseLevel <=24) goto L_Lvl_too_low; 
+    if (BaseLevel < 25) goto L_Lvl_too_low; 
    
     if(QUEST_Episode == 1) goto L_Check;
-    if(QUEST_Episode == 2) goto L_Redo_tea;
+    if(QUEST_Episode == 2) goto L_RedoTa;
 
     mes "[The Doctor]";
     mes "\" Quite interesting, quite interesting indeed.\"";
@@ -14,18 +14,18 @@
     mes "[The Doctor]";
     mes "\"Well, you are, your quite interesting. I've been watching you for sometime now, helping so many people and a master at what you do indeed.\"";
     menu
-        "Well, thanks",-;
+        "Well, thanks.",-;
     mes "[The Doctor]";
     mes "\" I don't suppose you have some herbs and a few bottles of water with you, do you?\"";
     menu
         "Some herbs and water, can you be more specific?",-;
     mes "[The Doctor]";
-    mes "\"Ah, sorry, of course, I need 50 mauve herbs, 50 cobalt herbs, 50 gamboge herbs, 50 alizarin herbs and 10 bottles of water as well.\"";
+    mes "\"Ah, sorry, of course, I need 50 mauve herbs, 50 cobalt herbs, 50 gamboge herbs, 50 alizarin herbs, and 10 bottles of water as well.\"";
     menu
-        "It's not much of a trouble, but do i get something in return?",-;
+        "It's not much of a trouble, but do I get something in return?",-;
     mes "[The Doctor]";
-    mes "\"I suppose, What would you like?";
-    mes "Ah never mind, I have something in mind to give you. You can go off now, get what i need.\"";
+    mes "\"I suppose. What would you like?";
+    mes "Ah never mind, I have something in mind to give you. You can go off now, get what I need.\"";
 	set QUEST_Episode,1;
     close;
 
