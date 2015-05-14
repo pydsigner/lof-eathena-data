@@ -3,7 +3,7 @@
 // state3: it's your first visit, you can choose a reward
 // state4: you can do daily quests with white and yellow presents boxes
 
-031-2.gat,29,28,0|script|Angela#house|196,
+031-2,29,28,0|script|Angela#house|196
 {
     set @Q_Nivalis_state_MASK, NIBBLE_5_MASK;
     set @Q_Nivalis_state_SHIFT, NIBBLE_5_SHIFT;
@@ -52,10 +52,9 @@ L_Hello_Again:
     mes "\"Hello! Good to see you again. Please warm yourself.\"";
     next;
     menu
-        "I just wanted to say hello.",-,
+        "I just wanted to say hello.",L_Close,
         "I have some yellow present boxes.",L_Yellow,
         "I have some white present boxes.",L_White;
-    goto L_Close;
 
 L_Yellow:
     set @dq_level, 70;

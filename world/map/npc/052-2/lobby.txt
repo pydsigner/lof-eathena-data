@@ -14,7 +14,7 @@
 //     8: Witch guards defeated. Door is open.
 //-----------------------------------------------------------------------------
 
-052-2.gat,40,19,0|script|#InnDoorTrigger|32767,2,2,
+052-2,40,19,0|script|#InnDoorTrigger|32767,2,2
 {
     set @step, 5;
     if ($@illia_progress < @step) goto L_ShouldNotBeHere;
@@ -23,17 +23,17 @@
     end;
 
 L_Warp:
-    warp "052-2.gat", 23, 71;
+    warp "052-2", 23, 71;
     message strcharinfo(0), "This place is full of dust... *coughs*";
     end;
 
 L_ShouldNotBeHere:
-    percentheal -100, 0;
+    heal -100, 0;
     end;
 
 }
 
-052-2.gat,33,40,0|script|#EntranceTrigger|32767,4,2,
+052-2,33,40,0|script|#EntranceTrigger|32767,4,2
 {
     set @step, 5;
     if ($@illia_progress < @step) goto L_ShouldNotBeHere;
@@ -42,15 +42,15 @@ L_ShouldNotBeHere:
 
 L_StartVoices:
     set $@illia_level_5_progress, 1;
-    cmdothernpc "#MysteriousVoice", "Start";
+    donpcevent "#MysteriousVoice::OnCommandStart";
     end;
 
 L_ShouldNotBeHere:
-    percentheal -100, 0;
+    heal -100, 0;
     end;
 }
 
-052-2.gat,1,1,0|script|#LuviaShadow|127,
+052-2,1,1,0|script|#LuviaShadow|127
 {
 end;
 
@@ -103,7 +103,7 @@ OnNN:
 
 }
 
-052-2.gat,1,1,0|script|#MysteriousVoice|127,
+052-2,1,1,0|script|#MysteriousVoice|127
 {
 end;
 
@@ -121,7 +121,7 @@ OnTimer2000:
     if ($@illia_level_5_progress != 1)
         end;
     npcwarp rand(30,42), rand(32,38), "?";
-    cmdothernpc "?", "Talk";
+    donpcevent "?::OnCommandTalk";
     end;
 
 OnTimer3000:
@@ -138,7 +138,7 @@ OnTimer3000:
     setnpctimer 0;
     set $@illia_lobby_voices_index, 0;
     set $@illia_level_5_progress, 2;
-    cmdothernpc "#LuviaShadow", "Invoke";
+    donpcevent "#LuviaShadow::OnCommandInvoke";
     end;
 
 L_Continue:
@@ -149,7 +149,7 @@ L_Continue:
 
 // Dummy npc to display the mysterious voice,
 // as a workaround to fakenpcname causing problems
-052-2.gat,1,1,0|script|?|127,
+052-2,1,1,0|script|?|127
 {
 end;
 
@@ -159,10 +159,10 @@ OnCommandTalk:
 
 }
 
-052-2.gat,1,1,0|script|Luvia?|371,2,2
+052-2,1,1,0|script|Luvia?|371,2,2
 {
     if ($@illia_level_5_progress != 3) end;
-    if (isin("052-2.gat", 37,36, 41,39)) goto L_HandleTalk;
+    if (isin("052-2", 37,36, 41,39)) goto L_HandleTalk;
     // Notify too far
     mes "You see a strange and frightening, yet beautiful woman.";
     if (strcharinfo(0) == $@ILLIA_HERO$)
@@ -173,15 +173,14 @@ L_HandleTalk:
     if (strcharinfo(0) == $@ILLIA_HERO$)
         goto L_TalkToHero;
     goto L_TalkToHelper;
-    end;
 
 L_TalkToHelper:
     mes "She gives you a quick look then gives her attention to " + $@ILLIA_HERO$ + ".";
     close;
 
 L_TalkToHero:
-    menu
-        "Are you Luvia? Your sister Valia sent me to save you! Where is Ismuth?", -;
+    mes "Are you Luvia? Your sister Valia sent me to save you! Where is Ismuth?";
+    next;
     set $@illia_level_5_progress, 4;
     initnpctimer;
     close;
@@ -236,7 +235,7 @@ OnTimer24500:
     npctalk "Demonotis!";
     misceffect FX_EVIL_SUMMON;
     callsub S_GetHeroRect;
-    areamonster "052-2.gat", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 20 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
+    areamonster "052-2", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 20 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
     callsub S_ClearHeroRect;
     end;
 
@@ -246,7 +245,7 @@ OnTimer44000:
     npctalk "Demonotis!";
     misceffect FX_EVIL_SUMMON;
     callsub S_GetHeroRect;
-    areamonster "052-2.gat", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 28 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
+    areamonster "052-2", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 28 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
     callsub S_ClearHeroRect;
     end;
 
@@ -256,7 +255,7 @@ OnTimer77000:
     npctalk "Demonotis!";
     misceffect FX_EVIL_SUMMON;
     callsub S_GetHeroRect;
-    areamonster "052-2.gat", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 42 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
+    areamonster "052-2", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1101, 42 + 16 - 480/(30+$Illia_Luvia_Harvest), "Luvia?::OnDSDeath";
     callsub S_ClearHeroRect;
     // That was the last spawn: reset the timer to start the CheckInvoke loop.
     set $@illia_level_5_progress, 5;
@@ -289,7 +288,7 @@ OnTimer18500:
     misceffect FX_EVIL_SUMMON;
     misceffect FX_MAGIC_DARK_EXPLOSION;
     callsub S_GetHeroRect;
-    areamonster "052-2.gat", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1103, 8 + (16 - 480/(30+$Illia_Luvia_Harvest))/3, "Luvia?::OnWGDeath";
+    areamonster "052-2", $@illia_lobby_x1, $@illia_lobby_y1, $@illia_lobby_x2, $@illia_lobby_y2, "", 1103, 8 + (16 - 480/(30+$Illia_Luvia_Harvest))/3, "Luvia?::OnWGDeath";
     callsub S_ClearHeroRect;
     end;
 
@@ -297,7 +296,7 @@ OnTimer20000:
     if ($@illia_level_5_progress != 6)
         end;
     set $@illia_level_5_progress, 7;
-    cmdothernpc "#LuviaShadow", "Escape";
+    donpcevent "#LuviaShadow::OnCommandEscape";
     setnpctimer 0;
     end;
 
@@ -309,19 +308,19 @@ OnTimer2000:
         end;
     setnpctimer 0;
     // Mock players randomly (more or less once every 40 secs) and if still enough mobs running after them
-    if ($@illia_level_5_progress == 5 && rand(20) == 0 && (mobcount("052-2.gat", "Luvia?::OnDSDeath") > 20))
+    if ($@illia_level_5_progress == 5 && rand(20) == 0 && (mobcount("052-2", "Luvia?::OnDSDeath") > 20))
         npctalk "Ahaha! Run... Run!";
-    if ($@illia_level_5_progress == 5 && (mobcount("052-2.gat", "Luvia?::OnDSDeath") < 0))
+    if ($@illia_level_5_progress == 5 && (mobcount("052-2", "Luvia?::OnDSDeath") < 0))
         goto L_AllWavesClear;
-    if ($@illia_level_5_progress == 7 && (mobcount("052-2.gat", "Luvia?::OnWGDeath") < 0))
+    if ($@illia_level_5_progress == 7 && (mobcount("052-2", "Luvia?::OnWGDeath") < 0))
         goto L_AllWavesClear;
     end;
 
 L_Clear:
     stopnpctimer;
     setnpctimer 0;
-    killmonster "052-2.gat", "Luvia?::OnDSDeath";
-    killmonster "052-2.gat", "Luvia?::OnWGDeath";
+    killmonster "052-2", "Luvia?::OnDSDeath";
+    killmonster "052-2", "Luvia?::OnWGDeath";
     end;
 
 L_AllWavesClear:
@@ -338,13 +337,15 @@ L_ChaseLuvia:
     set $@illia_progress, 6;
     callfunc "UpdateIlliaProgress";
     set $@illia_max_time, $@illia_max_time + 360;
-    areatimer "052-2.gat", 19, 18, 48, 43, 2000, "#LuviaShadow::OnNN";
+    areatimer "052-2", 19, 18, 48, 43, 2000, "#LuviaShadow::OnNN";
     end;
 
 S_GetHeroRect:
-    if (isloggedin($@ILLIA_HERO_ID) == 0)
+    if (!(attachrid($@ILLIA_HERO_ID)))
         goto L_Clear;
-    attachrid($@ILLIA_HERO_ID);
+    if(!(isin("052-2", 20, 21, 47, 43)))
+        goto L_Clear;
+
     set $@illia_lobby_x, getx();
     set $@illia_lobby_y, gety();
 
@@ -366,10 +367,10 @@ S_GetHeroRect:
     return;
 
 S_ClearHeroRect:
-    set $@illia_lobby_x1, 0;
-    set $@illia_lobby_y1, 0;
-    set $@illia_lobby_x2, 0;
-    set $@illia_lobby_y2, 0;
+    set $@illia_lobby_x1, 20;
+    set $@illia_lobby_y1, 19;
+    set $@illia_lobby_x2, 47;
+    set $@illia_lobby_y2, 42;
     return;
 
 OnDSDeath:

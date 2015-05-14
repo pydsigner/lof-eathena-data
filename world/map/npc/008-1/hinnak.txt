@@ -5,13 +5,12 @@
 //
 // Variables used: Nibble 1 of QUEST_Hurnscald (previously QUEST_Scythe_state)
 
-008-1.gat,101,30,0|script|Hinnak|142,
+008-1,101,30,0|script|Hinnak|142
 {
-    callfunc "ClearVariables";
-
     set @inspector, ((QUEST_Hurnscald & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT);
 
     if (@inspector == 10) goto L_NohMask;
+    goto L_No_NohMask;
 
 L_No_NohMask:
     set @state, ((QUEST_Hurnscald & NIBBLE_1_MASK) >> NIBBLE_1_SHIFT);
@@ -71,6 +70,7 @@ L_Exchange:
         goto L_Exchange_Start;
     mes "The farmer glares at your hat.";
     next;
+    goto L_Exchange_Start;
 
 L_Exchange_Start:
     mes "[Farmer Hinnak]";
@@ -116,22 +116,29 @@ L_ThanksHat:
     mes "[Farmer Hinnak]";
     mes "\"That better be a trophy on your head.\"";
     menu
-        "It is.", -;
+        "It is.", L_Next;
+
+L_Next:
     mes "[Farmer Hinnak]";
     mes "\"Good then. Thanks for your help with the pinkies.\"";
+    goto L_ThanksMenu;
 
 L_ThanksMenu:
     menu
-        "Sure, any time!", -,
-        "Anything else you want me to do?", -,
-        "You're welcome.  Bye!", L_Bye;
+        "Sure, any time!", L_Next1,
+        "Anything else you want me to do?", L_Next1,
+        "You're welcome. Bye!", L_Bye;
+
+L_Next1:
     mes "[Farmer Hinnak]";
-    mes "\"Actually, it's been a long day.  If it's no trouble, could you get me a beer?\"";
+    mes "\"Actually, it's been a long day. If it's no trouble, could you get me a beer?\"";
     next;
     menu
         "Here you are.", L_GiveBeer,
-        "Sure, I'll go get one.  Bye!", L_Bye,
-        "You shouldn't drink while working!", -;
+        "Sure, I'll go get one. Bye!", L_Bye,
+        "You shouldn't drink while working!", L_Next2;
+
+L_Next2:
     mes "[Farmer Hinnak]";
     mes "\"Well, I'm done for the day, and I'm quite old enough to decide when I can have a beer, thank you!\"";
     next;
@@ -150,7 +157,7 @@ L_GiveBeer:
     next;
     mes "[Farmer Hinnak]";
     mes "He takes another sip.";
-    mes "\"Thanks!  You know, I had the strangest thing happen to me.  I had this patch of ground that was really clumpy; lots of clay, you see.\"";
+    mes "\"Thanks!  You know, I had the strangest thing happen to me. I had this patch of ground that was really clumpy; lots of clay, you see.\"";
     next;
     mes "[Farmer Hinnak]";
     mes "\"Right over there.\"";
@@ -158,14 +165,14 @@ L_GiveBeer:
     mes "\"Looks much better now, doesn't it?  But how I got there is kind-a scary...\"";
     next;
     mes "[Farmer Hinnak]";
-    mes "\"I'd been trying to break it up for a while, but that kind of work is a pain.  So my wife said that I should go and see the witch, just in case she knows something.\"";
+    mes "\"I'd been trying to break it up for a while, but that kind of work is a pain. So my wife said that I should go and see the witch, just in case she knows something.\"";
     next;
     mes "[Farmer Hinnak]";
-    mes "\"And sure enough I ask the witch, and she has a look at it.  'Nothing I can do', she says, 'but I can ask a friend'.\"";
+    mes "\"And sure enough I ask the witch, and she has a look at it. 'Nothing I can do', she says, 'but I can ask a friend'.\"";
     next;
     mes "[Farmer Hinnak]";
-    mes "\"So the next day another witch shows up.  Gorgeous woman, but when she looked at me, the scares went scuttling down my spine....\"";
-    mes "\"First thing she asked was if I'm a farmer.  Said her friend had told her that I needed help.\"";
+    mes "\"So the next day another witch shows up. Gorgeous woman, but when she looked at me, the scares went scuttling down my spine....\"";
+    mes "\"First thing she asked was if I'm a farmer. Said her friend had told her that I needed help.\"";
     next;
     mes "[Farmer Hinnak]";
     mes "\"I show her what the problem is, and she tells me to go inside and wait.\"";
@@ -174,7 +181,7 @@ L_GiveBeer:
     mes "\"Hinnak drains his beer in one long sip, then hesitates.";
     next;
     mes "[Farmer Hinnak]";
-    mes "\"So I go inside.  I'm barely in when it starts raining outside, pouring cats and mouboos!\"";
+    mes "\"So I go inside. I'm barely in when it starts raining outside, pouring cats and mouboos!\"";
     next;
     mes "[Farmer Hinnak]";
     mes "\"Not so weird, perhaps, except that it was been bright and sunny just a second before!  So I rush out, my wife telling me to leave the witch alone, and I see her standing there in the middle of the rain...\"";
@@ -195,12 +202,11 @@ L_GiveBeer:
         "Hahaha!", L_Sagatha_hahaha,
         "Whoah, scary...", L_Sagatha_scary,
         "What was that gobbledygook word?", L_Sagatha_word,
-        "I better go now.", -;
-    goto L_Bye;
+        "I better go now.", L_Bye;
 
 L_Sagatha_hahaha:
     mes "[Farmer Hinnak]";
-    mes "\"Yeah, funny now...  But you should've seen that stare!  Ah, well, never mind.\"";
+    mes "\"Yeah, funny now... But you should've seen that stare!  Ah, well, never mind.\"";
     goto L_Close;
 
 L_Sagatha_scary:

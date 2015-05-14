@@ -1,7 +1,7 @@
 // Sagatha the witch, expert for nature and astral magic
 //----------------------------------------
 
-function|script|QuestSagathaHappy|,
+function|script|QuestSagathaHappy
 {
     set @unhappiness, (QUEST_MAGIC & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT;
     if (@unhappiness < @value)
@@ -12,6 +12,7 @@ function|script|QuestSagathaHappy|,
 
 L_zero:
     set @unhappiness, 0;
+    goto L_write;
 
 L_write:
     set QUEST_MAGIC, (QUEST_MAGIC & ~NIBBLE_3_MASK) | (@unhappiness << NIBBLE_3_SHIFT);
@@ -19,7 +20,7 @@ L_write:
 }
 
 //----------------------------------------
-function|script|QuestSagathaAnnoy|,
+function|script|QuestSagathaAnnoy
 {
     set @unhappiness, (QUEST_MAGIC & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT;
     if ((@unhappiness + @value) > 15)
@@ -30,6 +31,7 @@ function|script|QuestSagathaAnnoy|,
 
 L_max:
     set @unhappiness, 15;
+    goto L_write;
 
 L_write:
     set QUEST_MAGIC, (QUEST_MAGIC & ~NIBBLE_3_MASK) | (@unhappiness << NIBBLE_3_SHIFT);
@@ -37,12 +39,13 @@ L_write:
 }
 
 //----------------------------------------
-function|script|SagathaStatus|,
+function|script|SagathaStatus
 {
     if (getequipid(equip_head) != 1216 && getequipid(equip_head) != 752)
         goto L_next;
     set @value, 15;
     callfunc "QuestSagathaAnnoy";
+    goto L_next;
 
 L_next:
     set @mexp, MAGIC_EXPERIENCE & 65535;
@@ -69,7 +72,7 @@ L_next:
 }
 
 //----------------------------------------
-013-1.gat,131,24,0|script|Sagatha#_M|167,
+013-1,131,24,0|script|Sagatha#_M|167
 {
     callfunc "SagathaStatus";
 
@@ -109,18 +112,19 @@ L_next:
         mes "She looks at you impassively.";
     next;
     menu
-        "Who are you?", -,
+        "Who are you?", L_Next,
         "What's your name?", L_intro_name,
         "Hello!  My name is " + strcharinfo(0) + ".", L_intro_givename,
-        "Goodbye.", L_close;
+        "Goodbye.", L_Close;
+
+L_Next:
     mes "[Witch]";
-    mes "\"I am what you humans call a witch.  I am a human who has chosen all living creatures as what you call family.\"";
+    mes "\"I am what you humans call a witch. I am a human who has chosen all living creatures as what you call family.\"";
     next;
     menu
         "No, I mean... what's your name?", L_intro_name,
         "Hello!  My name is " + strcharinfo(0) + ".", L_intro_givename,
-        "Uh.... goodbye.", L_close;
-    close;
+        "Uh.... goodbye.", L_Close;
 
 L_hat_attack:
     mes "The witch seems to be trembling with disgust as she stares at your headgear.";
@@ -151,8 +155,7 @@ L_intro_givename:
     next;
     menu
         "What's yours?", L_intro_name,
-        "Uhm... bye.", -;
-    close;
+        "Uhm... bye.", L_Close;
 
 L_evil:
     mes "The witch's eyes flare up in anger as she notices you, and she turns away from you.";
@@ -173,6 +176,7 @@ L_wb:
     if (@good == 0)
         mes "Sagatha glances at you, suspicion evident in her eyes.";
     next;
+    goto L_main;
 
 L_main:
     if (@Q_status)
@@ -180,23 +184,21 @@ L_main:
             "Can you explain magic to me?", L_explain_magic,
             "Can you teach me more magic?", L_teach,
             "What do you know about...", L_Question,
-            "Goodbye.", L_close;
-    if (!@Q_status)
-        menu
-            "Can you explain magic to me?", L_explain_magic,
-            "Can you teach me magic?", L_teach_initial,
-            "What do you know about...", L_Question,
-            "Goodbye.", L_close;
-    close;
+            "Goodbye.", L_Close;
+    menu
+        "Can you explain magic to me?", L_explain_magic,
+        "Can you teach me magic?", L_teach_initial,
+        "What do you know about...", L_Question,
+        "Goodbye.", L_Close;
 
 L_teach_initial:
     if (@good < 2)
-        goto L_teach_initial_nogood;
+        goto L_initial_nogood;
     if (getskilllv(SKILL_MAGIC_NATURE) < 2)
-        goto L_teach_initial_nonature;
+        goto L_initial_nonature;
     mes "[Sagatha the Witch]";
     mes "She nods.";
-    mes "\"For now, yes.  But you will have to prove that you really care about more than yourself.\"";
+    mes "\"For now, yes. But you will have to prove that you really care about more than yourself.\"";
     next;
     mes "[Sagatha the Witch]";
     mes "She snaps her fingers, and without warning you begin to acutely sense the magical energies around you, for a brief instant!";
@@ -207,19 +209,19 @@ L_teach_initial:
     callsub S_up_astral;
     next;
     mes "[Sagatha the Witch]";
-    mes "\"In the future, I will teach you nature and astral magic.  For the other schools there are better teachers around.\"";
+    mes "\"In the future, I will teach you nature and astral magic. For the other schools there are better teachers around.\"";
     if (getskilllv(SKILL_MAGIC) < 2)
         mes "\"Your skill in magic won't be great enough to use some of the spells yet, so keep practicing and visiting the mana seed until it is.\"";
     next;
     goto L_main;
 
-L_teach_initial_nogood:
+L_initial_nogood:
     mes "[Sagatha the Witch]";
     mes "\"I don't take strangers as students.\"";
     next;
     goto L_main;
 
-L_teach_initial_nonature:
+L_initial_nonature:
     mes "[Sagatha the Witch]";
     mes "\"I might, but you don't even understand the basics of nature magic.\"";
     next;
@@ -246,7 +248,7 @@ L_teach:
         goto L_teach_N11;
 
     mes "[Sagatha the Witch]";
-    mes "\"Not yet.  You have to ask the mana seed to give you more power.\"";
+    mes "\"Not yet. You have to ask the mana seed to give you more power.\"";
     next;
     goto L_main;
 
@@ -265,20 +267,20 @@ L_teach_N14:
     if (@mexp < 125)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"Some forest creatures sometimes overgrow their fur or hide.  That makes them uncomfortable.\"";
+    mes "\"Some forest creatures sometimes overgrow their fur or hide. That makes them uncomfortable.\"";
     next;
     mes "[Sagatha the Witch]";
-    mes "\"You can help them with shearing magic.  Press your hands together and say '" + getspellinvocation("shear") + "'.  Then touch them with your hands, and brush off any excess.\"";
+    mes "\"You can help them with shearing magic. Press your hands together and say '" + getspellinvocation("shear") + "'. Then touch them with your hands, and brush off any excess.\"";
     next;
     mes "[Sagatha the Witch]";
-    mes "\"The spell is strong, so you only need to do this once.  Be careful not to cut them.  Some things they shed are useful.  Often they will leave them to you as a thank-you.\"";
+    mes "\"The spell is strong, so you only need to do this once. Be careful not to cut them. Some things they shed are useful. Often they will leave them to you as a thank-you.\"";
     goto L_practice;
 
 L_teach_N10:
     if (@mexp < 150)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"Next, a nature spell.  Take a cocoon shell.  Hold it in your hand.  Feel its lightness.\"";
+    mes "\"Next, a nature spell. Take a cocoon shell. Hold it in your hand. Feel its lightness.\"";
     next;
     mes "[Sagatha the Witch]";
     mes "\"Now whisper '" + getspellinvocation("flying-backpack") + "', and if your backpack was pressing on you you should no longer feel it now.\"";
@@ -288,7 +290,7 @@ L_teach_A10:
     if (@mexp < 180)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"To protect against others' magic, take a small mushroom from a shady place.  Mushrooms draw things out of the earth.  Rub your mushroom into pieces between your hands.\"";
+    mes "\"To protect against others' magic, take a small mushroom from a shady place. Mushrooms draw things out of the earth. Rub your mushroom into pieces between your hands.\"";
     next;
     mes "[Sagatha the Witch]";
     mes "\"Then say '" + getspellinvocation("barrier") + "' and let the mushroom's power take over.\"";
@@ -298,7 +300,7 @@ L_teach_A11:
     if (@mexp < 200)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"If you must fight, call allies.  You can call spiky mushrooms out of the ground with a mushroom spike and a root.  Hold up the spike and call out to them: '" + getspellinvocation("summon-spiky-mushrooms") + "'.  Then press the root to the ground.\"";
+    mes "\"If you must fight, call allies. You can call spiky mushrooms out of the ground with a mushroom spike and a root. Hold up the spike and call out to them: '" + getspellinvocation("summon-spiky-mushrooms") + "'. Then press the root to the ground.\"";
     next;
     mes "[Sagatha the Witch]";
     mes "\"Spiky mushrooms often grow too many spikes, so you can shear the spikes off of some.\"";
@@ -309,14 +311,14 @@ L_teach_A12:
     if (@mexp < 220)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"You can call fluffies, too.  But for them you must call out '" + getspellinvocation("summon-fluffies") + "' instead, with white fluffy fur instead of a spike.  And don't forget the root.\"";
+    mes "\"You can call fluffies, too. But for them you must call out '" + getspellinvocation("summon-fluffies") + "' instead, with white fluffy fur instead of a spike. And don't forget the root.\"";
     goto L_practice;
 
 L_teach_N11:
     if (@mexp < 250)
         goto L_teach_noexp;
     mes "[Sagatha the Witch]";
-    mes "\"You can harden your skin with a hard spike.  Hold it in your hands and speak '" + getspellinvocation("protect") + "', then draw its hardness into your skin.\"";
+    mes "\"You can harden your skin with a hard spike. Hold it in your hands and speak '" + getspellinvocation("protect") + "', then draw its hardness into your skin.\"";
     next;
     mes "[Sagatha the Witch]";
     mes "\"Or call it into someone else's skin, by saying that someone's name right after the '" + getspellinvocation("protect") + "'.\"";
@@ -379,7 +381,7 @@ L_Q_old_wizard:
 
 L_Q_imp:
     mes "[Sagatha the Witch]";
-    mes "\"He is an evil and cruel one.  He lies and cheats and will try to take advantage of you.  Stay away from him.\"";
+    mes "\"He is an evil and cruel one. He lies and cheats and will try to take advantage of you. Stay away from him.\"";
     next;
     goto L_main;
 
@@ -405,41 +407,35 @@ L_Q_manaseed_unabsorbed:
     goto L_main;
 
 L_Q_manaseed_m:
-    mes "\"You were lucky that the mana seed gave you its magic.  I hope that you will use this power for something good now.\"";
+    mes "\"You were lucky that the mana seed gave you its magic. I hope that you will use this power for something good now.\"";
     next;
     goto L_main;
 
 L_Q_manapotion:
     mes "[Sagatha the Witch]";
-    mes "\"I won't make one without a cauldron, that would be wasteful.  And I'm not going to start carrying a cauldron around.\"";
+    mes "\"I won't make one without a cauldron, that would be wasteful. And I'm not going to start carrying a cauldron around.\"";
     next;
     goto L_main;
 
 L_Q_wyara:
     mes "[Sagatha the Witch]";
-    mes "\"Wyara decided to live with humans, in Hurnscald.  She tries to make the world a better place in her own way.  Please be kind to her, she is a very good person.\"";
+    mes "\"Wyara decided to live with humans, in Hurnscald. She tries to make the world a better place in her own way. Please be kind to her, she is a very good person.\"";
     next;
     goto L_main;
 
 L_Q_auldsbel:
     mes "[Sagatha the Witch]";
     mes "She frowns.";
-    mes "\"He's a transmutation wizard, member of the northern council.  Reasonably competent wizard, too.\"";
+    mes "\"He's a transmutation wizard, member of the northern council. Reasonably competent wizard, too.\"";
     next;
     goto L_main;
 
-L_close:
+L_Close:
     close;
 
 S_up_astral:
     set @SUP_id, SKILL_MAGIC_ASTRAL;
     set @SUP_name$, "Astral Magic";
-    callfunc "SkillUp";
-    return;
-
-S_up_nature:
-    set @SUP_id, SKILL_MAGIC_NATURE;
-    set @SUP_name$, "Nature Magic";
     callfunc "SkillUp";
     return;
 

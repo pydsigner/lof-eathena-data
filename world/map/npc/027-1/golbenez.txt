@@ -1,16 +1,18 @@
-027-1.gat,68,89,0|script|#Golbenez#_M|204,{
-
-    set @fee, 1000;
+027-1,68,89,0|script|#Golbenez#_M|204
+{
+    set @fee, 666;
 
     mes "[Golbenez]";
-    mes "\"Welcome human. I finished the creation of the place of leisure.\"";
+    mes "\"Welcome mortal. I finished the creation of the place of leisure.\"";
     next;
     if (BaseLevel < 60)
         goto L_Weak;
     mes "\"I will bring you there for a small fee of " + @fee + "GP.\"";
     menu
-        "What? You already got so much money!",-,
+        "What? You already got so much money!",L_SoMuchSwag,
         "Ok, bring me there.",L_Warp;
+
+L_SoMuchSwag:
     mes "[Golbenez]";
     mes "\"Come back when you've changed your mind. It's a wonderful place.\"";
     close;
@@ -19,7 +21,7 @@ L_Warp:
     if (Zeny < @fee)
         goto L_No_Money;
     set Zeny, Zeny - @fee;
-    warp "027-2.gat", 105, 44;
+    warp "027-2", 105, 44;
     close;
 
 L_No_Money:
@@ -34,21 +36,4 @@ L_Weak:
     next;
     mes "\"Come back when you're a bit more experienced.\"";
     close;
-
-// Golbenez resets the graveyard monsters when no players are present
-// He's such an evil guy!
-OnInit:
-    if (debug >= 2) end;
-    initnpctimer;
-    end;
-
-OnTimer10000:
-    if (getareausers("027-1.gat", 0, 0, 149, 119, 1) == 0)
-        killmonsterall "027-1.gat";
-
-    setnpctimer 0;
-    end;
 }
-
-
-

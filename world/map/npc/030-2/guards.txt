@@ -1,0 +1,36 @@
+// Annual Xmas Bouncers
+
+030-2,85,43,0|script|Valjas|330
+{
+    callfunc "XmasStates";
+    callfunc "ThrowOutTheBum";
+    if(@getout) end;
+    mes "[Valjas]";
+    mes "\"...\"";
+    close;
+}
+
+030-2,89,43,0|script|Halas|330
+{
+    callfunc "XmasStates";
+    callfunc "ThrowOutTheBum";
+    if(@getout) end;
+    mes "[Halas]";
+    mes "\"...\"";
+    close;
+}
+
+030-2,89,84,0|script|Kilis|330,5,2
+{
+    callfunc "XmasStates";
+    callfunc "ThrowOutTheBum";
+    if(@getout) end;
+    mes "[Kilis]";
+    mes "\"...\"";
+    close;
+
+OnTouch:
+    callfunc "XmasStates";
+    callfunc "ThrowOutTheBum";
+    end;
+}

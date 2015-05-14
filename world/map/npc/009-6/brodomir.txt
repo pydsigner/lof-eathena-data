@@ -1,6 +1,6 @@
 // Last Man Standing PvP Event NPC
 // Authors: tux9th, Jenalya
-// many thanks to Jenalaya, o11c, Ablu :)
+// many thanks to Jenalaya, o11c, Ablu:*)
 //  CAVE: this script requires a patch by o11c that makes it possible for
 //  getareausers to check if players are alive or dead.
 
@@ -18,7 +18,7 @@
 
 // $@BRODOMIR_MONEY: Amount of money given by the sponsor
 
-009-6.gat,36,40,0|script|Brodomir|116,
+009-6,36,40,0|script|Brodomir|116
 {
     set @brodomir_money, 0;
     set @brodomir_item_amount, 0;
@@ -81,9 +81,11 @@ L_Item:
     mes "\"So the prize should be " + @brodomir_item_amount + " " + @brodomir_item$ + "?\"";
     mes "\"In case there aren't enough people to start the fight, I'll try to give it back to you. If you're not here then... well, then I'll keep it for myself.\"";
     menu
-        "Ok.", -,
+        "Ok.", L_Next,
         "No, you missunderstood me.", L_Item,
         "I changed my mind, forget it.", L_Close;
+
+L_Next:
     if ($@BRODOMIR_PVP_STATUS == 1)
         goto L_Wait;
     if (countitem(@brodomir_item$) < @brodomir_item_amount)
@@ -91,6 +93,8 @@ L_Item:
 
     // we need this loop because for items that can't be stacked, delitem can only delete a single one
     set @loopcounter, @brodomir_item_amount;
+    goto L_Delitem;
+
 L_Delitem:
     delitem @brodomir_item$, 1;
     set @loopcounter, @loopcounter - 1;
@@ -142,13 +146,10 @@ L_Go:
     goto L_Close;
 
 L_Wait:
-    set $@brodomir_seconds, ($@BRODOMIR_START_TIME - gettimetick(2));
+    set @ms, ($@BRODOMIR_START_TIME - gettimetick(2)) * 1000;
+    callfunc "HumanTime";
     mes "[Brodomir]";
-    if ($@brodomir_seconds/60 == 0)
-        mes "\"Just a little longer. I will bring you there in " + $@brodomir_seconds + " seconds.\"";
-    if ($@brodomir_seconds/60 > 0)
-        mes "\"Just a little longer. I will bring you there in " + $@brodomir_seconds/60 + " minute(s).\"";
-    set $@brodomir_seconds, 0;
+    mes "\"Just a little longer. I will bring you there in " + @time$ + ".\"";
     goto L_Close;
 
 OnTimer5000:
@@ -160,28 +161,30 @@ OnTimer5000:
     end;
 
 L_Warp:
-    if (getareausers("009-6.gat", 20, 20, 80, 80, 1) < 3)
+    if (getareausers("009-6", 20, 20, 80, 80, 1) < 3)
         goto L_Warpfail;
     set $@BRODOMIR_PVP_STATUS, $@BRODOMIR_PVP_STATUS + 1;
-    set $@BRODOMIR_PLAYERS, getareausers("009-6.gat", 20, 20, 80, 80, 1);
-    mapwarp "009-6.gat", "009-5.gat", 0, 0;
-    mapannounce "009-5.gat", "PvP On!", 0;
-    pvpon "009-5.gat";
+    set $@BRODOMIR_PLAYERS, getareausers("009-6", 20, 20, 80, 80, 1);
+    mapwarp "009-6", "009-5", 0, 0;
+    mapannounce "009-5", "Brodomir : PvP On!", 0;
+    pvpon "009-5";
     end;
 
 L_Warpfail:
-    mapannounce "009-6.gat", "There are not enough players around to start!", 0;
+    mapannounce "009-6", "Brodomir : There are not enough players around to start!", 0;
     if ($@BRODOMIR_ITEM_AMOUNT == 0 || $@BRODOMIR_ITEM$ == "")
         goto L_Cleanup;
     if (attachrid($@BRODOMIR_SPONSOR) == 0)
         goto L_SkipItemback;
-
     // we need this loop because for items that can't be stacked, getitem will stack them nevertheless
+    goto L_GetitemLoop;
+
 L_GetitemLoop:
     getitem $@BRODOMIR_ITEM$, 1;
     set $@BRODOMIR_ITEM_AMOUNT, $@BRODOMIR_ITEM_AMOUNT - 1;
     if ($@BRODOMIR_ITEM_AMOUNT > 0)
         goto L_GetitemLoop;
+    goto L_SkipItemback;
 
 L_SkipItemback:
     set $@BRODOMIR_ITEM_AMOUNT, 0;
@@ -190,9 +193,9 @@ L_SkipItemback:
     goto L_Cleanup;
 
 L_Check:
-    if (getareausers("009-5.gat", 20, 20, 80, 80, 1) > 1)
+    if (getareausers("009-5", 20, 20, 80, 80, 1) > 1)
         end;
-    areatimer "009-5.gat", 20, 20, 80, 80, 0, "Brodomir::OnReward";
+    areatimer "009-5", 20, 20, 80, 80, 0, "Brodomir::OnReward";
     goto L_End;
 
 OnReward:
@@ -202,13 +205,15 @@ OnReward:
     set Zeny, Zeny + ($@BRODOMIR_MONEY + 150 * $@BRODOMIR_PLAYERS);
     if ($@BRODOMIR_ITEM_AMOUNT == 0 || $@BRODOMIR_ITEM$ == "")
         goto L_SkipItem;
-
     // we need this loop because for items that can't be stacked, getitem will stack them nevertheless
+    goto L_Getitem;
+
 L_Getitem:
     getitem $@BRODOMIR_ITEM$, 1;
     set $@BRODOMIR_ITEM_AMOUNT, $@BRODOMIR_ITEM_AMOUNT - 1;
     if ($@BRODOMIR_ITEM_AMOUNT > 0)
         goto L_Getitem;
+    goto L_SkipItem;
 
 L_SkipItem:
     set $@BRODOMIR_ITEM$, "";
@@ -217,12 +222,18 @@ L_SkipItem:
     set $@BRODOMIR_PLAYERS, 0;
     end;
 
+L_Dead_Duels:
+    set DUELS, DUELS &~ $@DuelPvpBit;
+    warp "009-7", 39, 37;
+    end;
+
 L_Dead:
-    warp "009-3.gat", 155,83;
+    if(DUELS & $@DuelPvpBit) goto L_Dead_Duels;
+    warp "009-3", 155,83;
     end;
 
 L_End:
-    mapwarp "009-5.gat", "009-6.gat", 36, 42;
+    mapwarp "009-5", "009-6", 36, 42;
     goto L_Cleanup;
 
 L_Alreadystarted:
@@ -241,7 +252,7 @@ L_TooCheap:
     goto L_Close;
 
 L_Cleanup:
-    pvpoff "009-5.gat";
+    pvpoff "009-5";
     set $@BRODOMIR_PVP_STATUS , 0;
     set $@BRODOMIR_START_TIME, 0;
     stopnpctimer;

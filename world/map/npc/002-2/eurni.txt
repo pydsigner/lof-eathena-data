@@ -1,0 +1,43 @@
+//
+
+002-2,22,77,0|script|Eurni|136
+{
+    set @SERVICES_ZENY, 10000;
+
+    set @halloween_npc_id, $@halloween_npc_eurni;
+    callfunc "TrickOrTreat";
+
+    if (BaseLevel < 10) goto L_TooYoung;
+    if (Zeny < @SERVICES_ZENY) goto L_NoMoney;
+
+    mes "[Eurni the Surgeon]";
+    mes "\"Are you tired of who you are?\"";
+    next;
+    mes "\"Would you be interested in changing your sex?";
+    mes "It'll cost ##B" + @SERVICES_ZENY + " GP##b.\"";
+    next;
+
+    menu
+        "Please do.", L_Change,
+        "Leave my family treasures alone!", L_Close;
+
+L_Change:
+    if (Zeny < @SERVICES_ZENY)
+        goto L_NoMoney;
+    set Zeny, Zeny - @SERVICES_ZENY;
+    set Sex, !Sex;
+    close;
+
+L_TooYoung:
+    mes "[Eurni the Surgeon]";
+    mes "\"Move along, kid.\"";
+    close;
+
+L_NoMoney:
+    mes "[Eurni the Surgeon]";
+    mes "\"You don't have the kind of money to pay for my services.\"";
+    close;
+
+L_Close:
+    close;
+}

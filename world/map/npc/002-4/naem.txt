@@ -2,11 +2,8 @@
 // - nibble 4 and 5 of QUEST_SouthTulimshar
 // - in FLAGS, bits FLAG_GOT_NAEM_GLOVES and FLAG_OPENED_UNDERGROUND
 
-002-4.gat,91,96,6|script|Naem|109,
+002-4,91,96,6|script|Naem|109
 {
-    // This NPC previously used the variable TMW_Quest
-    callfunc "ClearVarTMW_Quest";
-
     set @state, ((QUEST_SouthTulimshar & BYTE_2_MASK) >> BYTE_2_SHIFT);
 
     if (FLAGS & FLAG_GOT_NAEM_GLOVES) goto L_Naem_Complete;
@@ -26,26 +23,26 @@
     if (@state == 9) goto L_Naem_Okay;
 
     mes "[Naem]";
-    mes "\"I'm just mining away here.  Lots of work to do.\"";
+    mes "\"I'm just mining away here. Lots of work to do.\"";
     goto L_Close;
 
 L_Naem_Okay:
     set @state, 10;
     callsub S_Update_Var;
     mes "[Naem]";
-    mes "\"Oh, hello there.  Nickos wanted you to check on me? Yeah, you can tell him I'm okay.\"";
+    mes "\"Oh, hello there. Nickos wanted you to check on me? Yeah, you can tell him I'm okay.\"";
     goto L_Close;
 
 L_Naem_Cool:
     mes "[Naem]";
-    mes "\"Yeah, I'm cool.  Just mining away here.\"";
+    mes "\"Yeah, I'm cool. Just mining away here.\"";
     goto L_Close;
 
 L_Naem_Help_1:
     set @state, 13;
     callsub S_Update_Var;
     mes "[Naem]";
-    mes "\"Oh, you are here to help move my bags?  Cool, I've got a few ready to go.  Go ahead and take this one!\"";
+    mes "\"Oh, you are here to help move my bags?  Cool, I've got a few ready to go. Go ahead and take this one!\"";
     next;
     mes "Naem hands you a bag of ore.";
     next;
@@ -83,7 +80,7 @@ L_Naem_Help_3:
 
 L_Naem_Waits_3:
     mes "[Naem]";
-    mes "\"You got my last sack already.  Just give it to Nathan and we'll have caught up.\"";
+    mes "\"You got my last sack already. Just give it to Nathan and we'll have caught up.\"";
     goto L_Close;
 
 L_Naem_Great:
@@ -95,7 +92,7 @@ L_Naem_Memory:
     mes "You see Naem grimacing in pain as you approach.";
     next;
     mes "[Naem]";
-    mes "\"Oh, my head!  Some rocks fell on me and bonked me pretty good.  I'm still a little sore.\"";
+    mes "\"Oh, my head!  Some rocks fell on me and bonked me pretty good. I'm still a little sore.\"";
     menu
         "Don't you have a key so I can go to the underground palace?", L_Naem_Palace_No,
         "You should be more careful.", L_Naem_Duh;
@@ -114,32 +111,32 @@ L_Naem_Palace_No:
 
 L_Naem_Lt:
     mes "[Naem]";
-    mes "\"I hurt my head pretty bad.  I also lost my key.  If you want to get into the underground palace, you'll have to talk to Lieutenant Dausen about getting the spare.\"";
+    mes "\"I hurt my head pretty bad. I also lost my key. If you want to get into the underground palace, you'll have to talk to Lieutenant Dausen about getting the spare.\"";
     goto L_Close;
 
 L_Naem_Code:
     mes "[Naem]";
-    mes "\"Oh, you got the key.  That is good!  But my head still hurts...  All I remember about the code is you have to put the key into the key hole buttons around the mine in a certain order and turn them in a certain order and it will unlock the underground palace.  Sorry, that's all I have for you.  Good luck!\"";
+    mes "\"Oh, you got the key. That is good!  But my head still hurts... All I remember about the code is you have to put the key into the key hole buttons around the mine in a certain order and turn them in a certain order and it will unlock the underground palace. Sorry, that's all I have for you. Good luck!\"";
     goto L_Close;
 
 L_Naem_Gloves:
     getinventorylist;
     if (@inventorylist_count == 100)
-        goto L_Nathan_TooMany;
+        goto L_Naem_TooMany;
     set FLAGS, FLAGS | FLAG_GOT_NAEM_GLOVES;
     getitem "MinerGloves", 1;
     mes "[Naem]";
     mes "\"Hey, good job on getting that together!  Take these gloves, they might prove useful in the underground palace.\"";
     goto L_Close;
 
-L_Naem_TooMany:
-    mes "[Naem]";
-    mes "\"You have too many items for me to give you a reward.\"";
-    goto L_Close;
-
 L_Naem_Complete:
     mes "[Naem]";
     mes "\"Yo-ho-ho, a miner's life for me!\"";
+    goto L_Close;
+
+L_Naem_TooMany:
+    mes "[Naem]";
+    mes "\"You have too many items for me to give you a reward.\"";
     goto L_Close;
 
 L_Close:

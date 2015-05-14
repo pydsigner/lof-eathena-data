@@ -1,0 +1,159 @@
+// The bakery
+
+// The chef
+002-2,21,22,0|script|Riskim|148
+{
+    mes "[Riskim]";
+    mes "";
+    mes "\"Welcome to our bakery!\"";
+
+    callfunc "KadiyaSubquestConsts";
+    if ((@Q_kadiya_status == @Q_STATUS_WANTS_CHOCOCAKE)
+        && (countitem ("MopoxCurePotion") > 0))
+            goto L_lace_chococake;
+
+    if ((@Q_kadiya_status == @Q_STATUS_WANTS_ORANGECUPCAKE)
+        && (countitem ("MopoxCurePotion") > 0))
+            goto L_lace_cupcake;
+
+    mes "\"Would you mind bringing me ##B6 acorns##b please? I need them to make flour so I can bake some chocolate cakes. I will be so delicious!\"";
+    next;
+    mes "\"Uh... I mean... the cakes will be delicious...\" %%;";
+    next;
+
+    set @dq_level, 15;
+    set @dq_cost, 3;
+    set @dq_count, 6;
+    set @dq_name$, "Acorn";
+    set @dq_friendly_name$, "acorns";
+    set @dq_money, 250;
+    set @dq_exp, 50;
+
+    callfunc "DailyQuest";
+
+    next;
+    mes "\"Don't forget: our bakery is the best!\"";
+    close;
+
+L_lace_chococake:
+    next;
+    menu
+        "Thanks! Let me have a look around...", L_End,
+        "Can you put this potion into a Chocolate Cake?", L_Next,
+        "Goodbye!", L_End;
+
+L_Next:
+    mes "[Riskim]";
+    mes "";
+    mes "You take the potion out and attempt to show it to Riskim, but he takes a step back.";
+    mes "\"Oh! I remember that smell...\"";
+    mes "\"Elanore's Mopox potion, right?  She made me drink that too...\"";
+    mes "He chuckles.";
+    mes "\"Yes. Well, you definitely want to hide that somehow.\"";
+    next;
+    mes "[Riskim]";
+    mes "";
+    mes "\"We'll need extra chocolate for that one. If you can give me ten pieces of chocolate, the Mopox potion, and a payment of 400 GP, I'll bake you a special Chocolate Cake that hides the taste.\"";
+    next;
+    menu
+        "I will get them for you.", L_End,
+        "Here you are!", L_Continue,
+        "Maybe later.", L_End;
+
+L_Continue:
+    if (countitem("ChocolateBar") < 10)
+        goto L_lacking_ingredients;
+    if (countitem("MopoxCurePotion") < 1)
+        goto L_lacking_ingredients;
+    if (Zeny < 400)
+        goto L_lacking_Zeny;
+    delitem "MopoxCurePotion", 1;
+    delitem "ChocolateBar", 10;
+    getitem "LacedChocolateCake", 1;
+    set Zeny, Zeny - 400;
+
+    mes "[Riskim]";
+    mes "";
+    mes "\"Please have a seat!\"";
+    mes "You watch as Riskim melts the chocolate, stirs in the potion, and then glazes a cake with the mixture.";
+    mes "\"It's a bit more chocolaty than your average chocolate cake, so it should help mask that awful taste.\"";
+    next;
+    mes "[Riskim]";
+    mes "";
+    mes "Riskim hands you the cake.";
+    mes "\"Here you are! I hope this helps.\"";
+    close;
+
+L_lacking_Zeny:
+    mes "[Riskim]";
+    mes "";
+    mes "\"I'm sorry, but I have to charge 400 GP. I've got to make a living somehow.\"";
+    close;
+
+L_lacking_ingredients:
+    mes "[Riskim]";
+    mes "";
+    mes "\"Sorry, but I need both the ten Chocolate Bars and your potion for this. Please come back later when you have everything.\"";
+    close;
+
+L_lace_cupcake:
+    next;
+    menu
+        "Thanks! Let me have a look around...", L_End,
+        "Can mix a potion into an Orange Cupcake?", L_More,
+        "Goodbye!", L_End;
+
+L_More:
+    mes "[Riskim]";
+    mes "";
+    mes "\"Orange Cupcakes? Oh dear... I'm sorry, but I have a very bad allergy to oranges.\"";
+    next;
+    mes "[Riskim]";
+    mes "";
+    mes "\"Perhaps the Chef at Dimond's Cove can help you. We get all of our cupcakes from him.\"";
+    next;
+    goto L_End;
+
+L_End:
+    close;
+}
+
+// Server
+002-2,28,31,0|script|Sara|108
+{
+    mes "[Sara]";
+    mes "";
+    mes "\"Hello!\"";
+    mes "\"If you'd like to buy something, just ask Drabur.\"";
+    mes "\"If you need something made-to-order, talk to Riskim.\"";
+    close;
+}
+
+// The cashier
+002-2,25,22,0|shop|Drabur|112,WhiteCake:*1,ChocolateCake:*1,OrangeCake:*1,AppleCake:*1,Cake:*1,CherryCake:*1,OrangeCupcake:*1,Milk:*1,XmasCake:*1
+
+// Bus boy
+002-2,21,28,0|script|Iormo|160
+{
+    mes "[Iormo]";
+    mes "";
+    mes "\"The cake sure is good, but this room can get messy with all the flour.\"";
+    close;
+}
+
+// An old couple eating at the bakery
+002-2,24,27,0|script|Rynoh|159
+{
+    mes "[Rynoh]";
+    mes "";
+    mes "\"The cakes may be expensive, but they sure are delicious!\"";
+    close;
+}
+
+002-2,26,27,0|script|Ontas|154
+{
+    mes "[Ontas]";
+    mes "";
+    mes "\"We come here almost every week! This place has some of the best bread I've ever eaten!\"";
+    close;
+}

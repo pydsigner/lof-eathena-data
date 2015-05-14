@@ -1,7 +1,7 @@
 // Annual Xmas
-// Author: Wushin
+// Authors: Wushin, Chayenne
 
-019-3.gat,79,30,0|script|#OrumTelepathy1|45,3,3,
+019-3,79,30,0|script|#OrumTelepathy1|45,3,3
 {
     callfunc "XmasStates";
 
@@ -24,7 +24,7 @@ L_End:
     end;
 }
 
-019-3.gat,104,67,0|script|#OrumTelepathy2|45,1,1,
+019-3,104,67,0|script|#OrumTelepathy2|45,1,1
 {
     callfunc "XmasStates";
 
@@ -47,7 +47,7 @@ L_End:
     end;
 }
 
-019-3.gat,102,95,0|script|#OrumTelepathy3|45,3,3,
+019-3,102,95,0|script|#OrumTelepathy3|45,3,3
 {
     callfunc "XmasStates";
 
@@ -70,7 +70,7 @@ L_End:
     end;
 }
 
-019-3.gat,81,61,0|script|#OrumTelepathy4|45,3,3,
+019-3,81,61,0|script|#OrumTelepathy4|45,3,3
 {
     callfunc "XmasStates";
 
@@ -93,7 +93,7 @@ L_End:
     end;
 }
 
-030-3.gat,62,74,0|script|#OrumTelepathy5|45,1,1,
+030-3,49,53,0|script|#OrumTelepathy5|45,1,1
 {
     callfunc "XmasStates";
 
@@ -109,14 +109,14 @@ L_XmasMain:
 L_Telepathy:
     mes "[Orum's Homunculus]";
     mes "\"Wrong way!\"";
-    mes "\"I'm in the northwestern corner.\"";
+    mes "\"I am in the northeastern corner.\"";
     close;
 
 L_End:
     end;
 }
 
-030-3.gat,48,73,0|script|#OrumTelepathy6|45,1,1,
+030-3,48,73,0|script|#OrumTelepathy6|45,1,1
 {
     callfunc "XmasStates";
 
@@ -132,14 +132,14 @@ L_XmasMain:
 L_Telepathy:
     mes "[Orum's Homunculus]";
     mes "\"Wrong Way!\"";
-    mes "\"I am in the northwestern corner.\"";
+    mes "\"I am in the northeastern corner.\"";
     close;
 
 L_End:
     end;
 }
 
-030-3.gat,55,52,0|script|#OrumTelepathy7|45,1,1,
+030-3,95,66,0|script|#OrumTelepathy7|45,1,1
 {
     callfunc "XmasStates";
 
@@ -155,14 +155,14 @@ L_XmasMain:
 L_Telepathy:
     mes "[Orum's Homunculus]";
     mes "\"Wrong Way!\"";
-    mes "\"I am in the northwestern corner.\"";
+    mes "\"I am in the northeastern corner.\"";
     close;
 
 L_End:
     end;
 }
 
-030-3.gat,28,28,0|script|Orum's Homunculus|385,
+030-3,100,49,0|script|Orum's Homunculus|385
 {
     callfunc "XmasStates";
 
@@ -175,9 +175,9 @@ L_OffSeason:
     end;
 
 L_XmasMain:
-    if !(@xmas_knows_route) goto L_SetPath;
+    if(!(@xmas_knows_route)) goto L_SetPath;
     if((@xmas_list_deliver) && !(@xmas_side)) goto L_OffSeason;
-    if((@xmas_reward_done_state) && (@xmas_side)) goto L_Thanks;
+    if((@xmas_reward_done_state) && (@xmas_side)) goto L_ThankYou;
     if((@xmas_reward1_done_state) && (@xmas_side)) goto L_Thanks;
     if((@xmas_reward2_done_state) && (@xmas_side)) goto L_Reward;
     if((@xmas_reward_start_state) && (@xmas_side)) goto L_Reward;
@@ -204,7 +204,9 @@ L_QuestStart1:
     mes "\"Greetings traveler, Do you have any time to help me out?\"";
     menu
         "No. I really have to go.", L_Close,
-        "Sure, I'm listening.", -;
+        "Sure, I'm listening.", L_Next;
+
+L_Next:
     mes "\"Good. You may have heard that some of the children's wish lists are missing.\"";
     mes "\"I sent a courier out to get their lists, but they have yet to return.\"";
     next;
@@ -220,7 +222,9 @@ L_QuestStart2:
     mes "\"Greetings traveler, Do you have any time to help me out?\"";
     menu
         "No. I really have to go.", L_Close,
-        "Sure, I'm listening.", -;
+        "Sure, I'm listening.", L_KeepGoing;
+
+L_KeepGoing:
     mes "\"Good. You may have heard that some of the children's wish lists are missing.\"";
     mes "\"I sent a courier out to get their lists, but they have yet to return.\"";
     next;
@@ -256,7 +260,9 @@ L_SantasList:
         goto L_NotComplete;
     mes "\"Take the altered list to Elijas.\"";
     menu
-        "I don't know, this sounds kind of naughty.",-;
+        "I don't know, this sounds kind of naughty.", L_Foo;
+
+L_Foo:
     mes "\"Do my bidding or I'll have no more words with you.\"";
     goto L_Close;
 
@@ -264,7 +270,9 @@ L_ListReturn:
     mes "[Orum's Homunculus]";
     mes "\"This had better be important, I've got enough to worry about.\"";
     menu
-        "Sorry for interrupting, but I've come down here because I delivered the fake list", -;
+        "Sorry for interrupting, but I've come down here because I delivered the fake list", L_FakeList;
+
+L_FakeList:
     mes "he stares blankly at you for a bit... ";
     next;
     mes "\"MUHAHAHAHAHAHAA!!\"";
@@ -302,9 +310,9 @@ L_ListReturn:
     mes "\"Now listen:\"";
     next;
     mes "\"So far my basement portal has remained undetected:";
-    mes "Head to the east in this cave to find it.\"";
+    mes "Head to the west in this cave to find it.\"";
     mes "\"Once there smash your fist into the small crack and you will be teleported into the basement of the inn.\"";
-    mes "\"Let me fake the mark Chief Warrick uses to identify his helpers. Don't get to close to the gaurds they might spot you.\"";
+    mes "\"Let me fake the mark Chief Warrick uses to identify his helpers. Don't get to close to the guards they might spot you.\"";
     mes "\"Now, prove yourself, gather the required items and go back to the Inn to sabotage Santa's Helpers.\"";
     callfunc "XmasSetSide";
     set XMASTIME, XMASTIME | $@xmas_helper_bit;
@@ -343,7 +351,7 @@ L_HelpHelpers:
 
 L_HelpPassage:
     mes "\"As I told you, I installed a passage to the Inn's basement:";
-    mes "Head to the east in this cave to find it.\"";
+    mes "Head to the west in this cave to find it.\"";
     mes "\"Once there, smash your fist into the small crack and you will be teleported into the basement of the inn.\"";
     goto L_Close;
 
@@ -441,9 +449,9 @@ L_Quick:
 L_Reward:
     mes "[Orum's Homunculus]";
     mes "\"Revenge is a dish best served cold..\"";
-    if @xmas_reward2_done_state
+    if (@xmas_reward2_done_state)
         set @xmas_state, $@xmas_reward_done;
-    if @xmas_reward_start_state
+    if (@xmas_reward_start_state)
         set @xmas_state, $@xmas_reward1_done;
 
     callfunc "XmasSetState";

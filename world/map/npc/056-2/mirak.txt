@@ -1,4 +1,4 @@
-056-2.gat,67,24,0|script|Mirak|372,
+056-2,67,24,0|script|Mirak|372
 {
 // Variables to set:
 // @dq_cost - The number of points this quest uses
@@ -33,6 +33,7 @@
         goto L_Ban;
     if (@talk < 3)
         goto L_Talk;
+    goto L_Ban;
 
 L_Ban:
     mes "[Mirak]";
@@ -50,14 +51,14 @@ L_Talk:
     mes "He looks at you angrily.";
     next;
     mes "[Mirak]";
-    mes "\"Hi, my name is Mirak. You might have the impression that I am nice, but I am NOT! I want to be left alone to read in peace! I tried that at my mansion in Port City but it did not work. My brother always kept going on about Bat Wings...\"";
+    mes "\"Hi, my name is Mirak. You might have the impression that I am nice, but I am NOT! I want to be left alone to read in peace! I tried that at my mansion in Port City but it did not work. My damn brother, he always kept going on about Bat Wings...\"";
     next;
     mes "Suddenly his face gets red. He breathes slowly three times...";
     next;
     mes "He seems to be calm again.";
     next;
     mes "[Mirak]";
-    mes "\"Eh... Ah! That's why I bought this house in these woods. I hoped nobody would come by here. It seems I was wrong. I believe that you did not read the notes I left behind. Read them on your way out.\"";
+    mes "\"Eh... Ah! That's why I bought this house in this goddamn woods. I hoped nobody would come by here. It seems I was wrong. I believe that you did not read the notes I left behind. Read them on your way out.\"";
     mes "He looks down on his book and ignores you.";
     set @talk, 1;
     callsub S_Update_Mask;
@@ -74,8 +75,10 @@ L_Talk2:
     mes "[Mirak]";
     mes "\"What do you want?!\"";
     menu
-        "Nothing.", -,
+        "Nothing.", L_Nothing,
         "Money!", L_Quest;
+
+L_Nothing:
     mes "[Mirak]";
     mes "\"Ahhhh! Get lost, or you'll regret it!\"";
     set @annoy, @annoy+1;
@@ -91,7 +94,6 @@ L_Quest:
     menu
         "Okay.", L_Trade,
         "Nah, I won't leave you alone.", L_Kill;
-    goto L_Exit;
 
 L_TooSoon:
     mes "Mirak looks up, sees you, and gets angry.";
@@ -101,7 +103,7 @@ L_TooSoon:
 
 L_Kill:
     misceffect sfx_magic_war, strcharinfo(0);
-    percentheal -100, 0;
+    heal -Hp, 0;
     set @annoy, 0;
     callsub S_Update_Mask_Annoy;
     set Mirak_Bantime, gettimetick(2) + 86400;

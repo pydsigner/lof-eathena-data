@@ -1,0 +1,159 @@
+// The government building in the south west
+
+// A clerk
+001-2,25,21,0|script|Estard|107
+{
+    mes "[Estard]";
+    mes "\"Hello. What can I do for you?\"";
+    next;
+    if (getpartnerid2())
+        goto L_main_married;
+
+    menu
+        "I'd like to get married.", L_marry,
+        "Never mind.", L_Close;
+
+L_main_married:
+    menu
+        "I'd like to file for divorce.", L_divorce,
+        "Never mind.", L_Close;
+
+L_marry:
+    if (BaseLevel < WEDDING_MIN_LEVEL)
+        goto L_marry_too_young;
+    if (Zeny < WEDDING_FEE)
+        goto L_marry_too_poor;
+
+    mes "";
+    mes "[Estard]";
+    mes "\"Are you sure that you want to get married? It'll cost you ##B" + WEDDING_FEE + " GP##b.\"";
+    menu
+        "Yes!", L_marry_do,
+        "I'm having second thoughts...", L_Close;
+
+L_marry_do:
+    callsub S_give_rings;
+    mes "";
+    mes "[Estard]";
+    mes "\"Here are your rings. In order to marry each other, you both must stand within one of the designated areas (like that small rug over there in the corner), wear your rings, and say 'marry (your partner's name).'\"";
+    close;
+
+L_marry_too_young:
+    mes "";
+    mes "[Estard]";
+    mes "\"I'm sorry, but you are too young to get married. You must be at least " + WEDDING_MIN_LEVEL + " levels old.\"";
+    next;
+
+    menu
+        "Can I at least get the wedding rings now?", L_get_rings,
+        "Thanks anyways.", L_Close;
+
+L_marry_too_poor:
+    mes "";
+    mes "[Estard]";
+    mes "\"It costs ##B" + WEDDING_FEE + " GP##b to get married. That covers all the processing fees for the marriage and provides you with two wedding rings.\"";
+    close;
+
+L_get_rings:
+    mes "";
+    mes "[Estard]";
+    mes "\"Yes! You certainly can. They're ##B" + WEDDING_FEE + " GP##b. That covers all the processing fees for the marriage and provides you with two wedding rings.\"";
+
+    if (Zeny < WEDDING_FEE)
+        menu
+            "Thanks, but I don't have enough with me right now.", L_Close;
+    if (Zeny >= WEDDING_FEE)
+        menu
+            "Sounds great!", L_get_rings_pay,
+            "No thanks.", L_Close;
+    goto L_get_rings_pay;
+
+L_get_rings_pay:
+    callsub S_give_rings;
+
+    mes "";
+    mes "[Estard]";
+    mes "\"There you go! %%1\"";
+    close;
+
+L_divorce:
+    set @divorce_cost, DIVORCE_FEE_PER_LEVEL * BaseLevel;
+
+    if (Zeny < @divorce_cost)
+        goto L_divorce_not_enough;
+
+    mes "[Estard]";
+    mes "\"I'm sorry to hear that. If you're sure you want a divorce, it'll cost you %%B" + @divorce_cost + " GP%%b.\"";
+    next;
+    menu
+        "I'm sure.", L_do_divorce,
+        "I'm having second thoughts...", L_Close;
+
+L_do_divorce:
+    if (Zeny < @divorce_cost)
+        goto L_not_enough_money;
+
+    if (divorce())
+        goto L_divorce_done;
+
+    mes "";
+    mes "[Estard]";
+    mes "\"I'm having trouble finding your documents. Please come back later.\"";
+    mes "";
+    mes "[Server]";
+    mes "There was an unexpected error when processing your divorce. Please report this to the developers.";
+    close;
+
+L_divorce_done:
+    set Zeny, Zeny - @divorce_cost;
+
+    mes "";
+    mes "[Estard]";
+    mes "\"You have now officially divorced your spouse.\"";
+    close;
+
+L_divorce_not_enough:
+    mes "";
+    mes "[Estard]";
+    mes "\"I'm sorry, but you don't have enough money to get a divorce. You need ##B" + @divorce_cost + " GP##b.\"";
+    close;
+
+L_not_enough_money:
+    mes "";
+    mes "[Estard]";
+    mes "\"I'm sorry, but it seems as though you don't have enough money.\"";
+    close;
+
+L_no_room_for_rings:
+    mes "";
+    mes "[Estard]";
+    mes "\"Hm... it doesn't look like you have enough room to carry these rings.";
+    mes "Free up some space, and then I'd be happy to give them to you.\"";
+    close;
+
+L_Close:
+    mes "";
+    mes "[Estard]";
+    mes "\"OK. Just come back whenever you're ready.\"";
+    close;
+
+S_give_rings:
+    if (Zeny < WEDDING_FEE)
+        goto L_not_enough_money;
+    getinventorylist;
+    if (@inventorylist_count > 98)
+        goto L_no_room_for_rings;
+
+    set Zeny, Zeny - WEDDING_FEE;
+    getitem "WeddingRing", 1;
+    getitem "WeddingRing", 1;
+    return;
+}
+
+// Guard
+001-2,22,21,0|script|Guard#govt_in|123
+{
+    mes "[Guard]";
+    mes "\"You're not allowed back here.\"";
+    close;
+}

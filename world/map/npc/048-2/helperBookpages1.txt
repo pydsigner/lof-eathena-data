@@ -4,7 +4,7 @@
 // Ensio is one of the helpers working on sorting the bookpages, can take bookpages
 // can give second hint about the visitor in investigation subquest
 
-048-2.gat,104,86,0|script|Ensio|365,
+048-2,104,86,0|script|Ensio|365
 {
     set @investigate, ((QUEST_BlueSage & $@Q_BlueSageInvestigate_MASK) >> $@Q_BlueSageInvestigate_SHIFT);
     set @bookpages, ((QUEST_BlueSage & $@Q_BlueSageBookPages_MASK) >> $@Q_BlueSageBookPages_SHIFT);
@@ -24,7 +24,9 @@
         goto L_Close;
     menu
         "Good luck with that. See you in ten years or something.",L_Investigate,
-        "Can I help somehow?",-;
+        "Can I help somehow?",L_Next;
+
+L_Next:
     mes "[Ensio]";
     mes "\"Oh, would you? That'd be great! You see, the slimes ate most of the books and it is difficult to retrieve the bookpages.";
     mes "If you feel capable of this task, you could go out to hunt the Blue and White Slimes, to get the bookpages back from them.\"";
@@ -57,9 +59,10 @@ L_Almost:
 L_Progress:
     mes "\"Did you get some bookpages from the slimes?\"";
     menu
-        "Yes, have a look.",-,
+        "Yes, have a look.",L_Continue,
         "No.",L_Investigate;
 
+L_Continue:
     if (countitem("BookPage") < 1)
         goto L_NoItem;
     delitem "BookPage", 1;

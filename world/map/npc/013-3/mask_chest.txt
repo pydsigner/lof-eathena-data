@@ -1,9 +1,7 @@
 //
 
-013-3.gat,28,27,0|script|Chest#DemonMask|111,
+013-3,28,27,0|script|Chest#DemonMask|111
 {
-    callfunc "ClearVariables";
-
     set @state, ((QUEST_Hurnscald & NIBBLE_2_MASK) >> NIBBLE_2_SHIFT);
 
     if (@state < 2) goto L_This_shouldn_t_happen;
@@ -31,7 +29,7 @@
     if (countitem("TreasureKey") == 0)
         goto L_No_treasure_key;
     if (countitem("PileOfAsh") == 0)
-        goto L_No_ash;
+        goto L_no_ash;
     if (countitem("MauveHerb") == 0
         || countitem("CobaltHerb") == 0
         || countitem("GambogeHerb") == 0
@@ -157,7 +155,7 @@ L_No_treasure_key:
     mes "No treasure chest key, no opening ritual.";
     goto L_Close;
 
-L_No_ash:
+L_no_ash:
     mes "You still need a pile of ash.";
     goto L_Close;
 
@@ -198,7 +196,7 @@ L_No_water:
     goto L_Close;
 
 L_This_shouldn_t_happen:
-    warp "013-3.gat", 71, 25;
+    warp "013-3", 71, 25;
     // You need to go through the barrier to get to the chest, so this shouldn't happen. So just warp them like the barrier does.
     goto L_Close;
 

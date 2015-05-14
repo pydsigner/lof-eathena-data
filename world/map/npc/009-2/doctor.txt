@@ -1,9 +1,7 @@
 // Doctor
 
-009-2.gat,148,25,0|script|Doctor|107,
+009-2,148,25,0|script|Doctor|107
 {
-    callfunc "ClearVariables";
-
     set @inspector, ((QUEST_Hurnscald & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT);
 
     if (getequipid(equip_head) == 616) goto L_Axe;
@@ -16,13 +14,13 @@
     if (@inspector == 1)
         menu
             "I think I am sick!", L_Cure,
-            "No, I feel fine.", -,
+            "No, I feel fine.", L_Next,
             "Have you seen anything strange in town? Anything that might have to do with the robberies?", L_NohMask;
-    if (@inspector != 1)
-        menu
-            "I think I am sick!", L_Cure,
-            "No, I feel fine.", -;
+    menu
+        "I think I am sick!", L_Cure,
+        "No, I feel fine.", L_Next;
 
+L_Next:
     mes "[Doctor]";
     mes "\"Then please stop wasting my precious time.\"";
     goto L_Close;
@@ -32,7 +30,7 @@ L_Cure:
     if (sc_check(sc_poison))
         goto L_CurePoison;
     mes "The doctor examines you briefly.";
-    mes "\"Nonsense!  You look fine and dandy to me.  All you need is a bit more exercise and fresh fruit in your diet!\"";
+    mes "\"Nonsense!  You look fine and dandy to me. All you need is a bit more exercise and fresh fruit in your diet!\"";
     goto L_Close;
 
 L_CurePoison:
@@ -63,7 +61,9 @@ L_Eyepatch:
     next;
     menu
         "Yes, please.", L_Eyepatch_GlassEye,
-        "No thank you", -;
+        "No thank you", L_Next1;
+
+L_Next1:
     mes "[Doctor]";
     mes "\"If you change your mind, please come back and see me.\"";
     goto L_Close;

@@ -1,6 +1,6 @@
 // The following auxiliary function is used both by appropriate magic and within the regular script:
 
-function|script|QuestMoubooHeal|,
+function|script|QuestMoubooHeal
 {
     set @Q_MASK, NIBBLE_2_MASK;
     set @Q_SHIFT, NIBBLE_2_SHIFT;
@@ -19,7 +19,7 @@ function|script|QuestMoubooHeal|,
     callsub S_update_var;
     mes "[Injured Mouboo]";
     mes "A soft white glow surrounds the mouboo's leg, which slowly shifts back into place.";
-    mes "As the glow subsides, the mouboo gets up, carefully, and takes a few steps.  It seems to be fully healed!";
+    mes "As the glow subsides, the mouboo gets up, carefully, and takes a few steps. It seems to be fully healed!";
     mes "[5000 experience points]";
     getexp 5000, 0;
     next;
@@ -29,11 +29,13 @@ function|script|QuestMoubooHeal|,
     next;
     set @value, 15;
     callfunc "QuestSagathaHappy";
-    close;
+    close2;
+    return;
 
 L_nothing:
     mes "Your spell has no effect.";
-    close;
+    close2;
+    return;
 
 S_update_var:
     set @Q_wr_status, @Q_status | @Q_status_upper;
@@ -43,7 +45,7 @@ S_update_var:
     return;
 }
 
-012-1.gat,57,153,0|script|Mouboo|171,
+012-1,57,153,0|script|Mouboo|171
 {
     set @Q_MASK, NIBBLE_2_MASK;
     set @Q_SHIFT, NIBBLE_2_SHIFT;
@@ -67,18 +69,18 @@ S_update_var:
     mes "[Injured Mouboo]";
     mes "You notice a mouboo lying on the ground, groaning, as if in pain.";
     next;
+    goto L_menu;
 
 L_menu:
     menu
         "Examine the mouboo", L_examine,
         "Give the mouboo something", L_give,
         "Kill the mouboo", L_kill,
-        "Leave", -;
-    close;
+        "Leave", L_Close;
 
 L_examine:
     mes "[Injured Mouboo]";
-    mes "Looking closer, you notice that the mouboo's left hind leg is bent at a very unnatural angle-- that seems to be the cause for its pain.";
+    mes "Looking closer, you notice that the mouboo's left hind leg is bent at a very unnatural angle – that seems to be the cause for its pain.";
     next;
     mes "[Injured Mouboo]";
     mes "You also notice that the mouboo is lying on top of what appears to be a black turtleneck sweater.";
@@ -87,17 +89,17 @@ L_examine:
     menu
         "Yes.", L_pickup_alive,
         "No.", L_menu;
-    goto L_menu;
 
 L_pickup_alive:
     mes "[Injured Mouboo]";
-    mes "The Mouboo groans and pushes your hand away.  It seems to be rather fond of the sweater.";
+    mes "The Mouboo groans and pushes your hand away. It seems to be rather fond of the sweater.";
     next;
     goto L_menu;
 
 L_give:
     set @items_nr, 12;
     setarray @items$, "CactusDrink", "CactusPotion", "ChocolateBar", "Milk", "OrangeCupcake", "RedApple", "Beer", "BottleOfWater", "TinyHealingPotion", "SmallHealingPotion", "MediumHealingPotion", "LargeHealingPotion";
+    setarray @itemnames$, "Cactus Drink", "Cactus Potion", "Chocolate Bar", "Milk", "Orange Cupcake", "Red Apple", "Beer", "Bottle of Water", "Tiny Healing Potion", "Small Healing Potion", "Medium Healing Potion", "Large Healing Potion";
     setarray @itemeat, 0,   0,   1,   0,   1,   1,   0,   1,   0,   0,   0,   0;
 
     setarray @menuItems$, "", "", "", "", "", "", "", "", "", "", "", "", "";
@@ -107,17 +109,18 @@ L_give:
 
     set @n, 0;
     set @ct, 0;
+    goto L_nloop;
 
 L_nloop:
     set @k$, @items$[@n];
     if (countitem(@k$) == 0)
         goto L_nloop_skip;
 
-    set @name$, getitemname(@k$);
-    set @menuItems$[@ct], @name$;
+    set @menuItems$[@ct], @itemnames$[@n];
     set @menuNames$[@ct], @k$;
     set @choice_eat[@ct], @itemeat[@n];
     set @ct, @ct + 1;
+    goto L_nloop_skip;
 
 L_nloop_skip:
     set @n, @n+1;
@@ -127,20 +130,21 @@ L_nloop_skip:
     set @menuItems$[@ct], "Nevermind";
 
     menu
-        @menuItems$[0], -,
-        @menuItems$[1], -,
-        @menuItems$[2], -,
-        @menuItems$[3], -,
-        @menuItems$[4], -,
-        @menuItems$[5], -,
-        @menuItems$[6], -,
-        @menuItems$[7], -,
-        @menuItems$[8], -,
-        @menuItems$[9], -,
-        @menuItems$[10], -,
-        @menuItems$[11], -,
-        @menuItems$[12], -;
+        @menuItems$[0], L_MenuItems,
+        @menuItems$[1], L_MenuItems,
+        @menuItems$[2], L_MenuItems,
+        @menuItems$[3], L_MenuItems,
+        @menuItems$[4], L_MenuItems,
+        @menuItems$[5], L_MenuItems,
+        @menuItems$[6], L_MenuItems,
+        @menuItems$[7], L_MenuItems,
+        @menuItems$[8], L_MenuItems,
+        @menuItems$[9], L_MenuItems,
+        @menuItems$[10], L_MenuItems,
+        @menuItems$[11], L_MenuItems,
+        @menuItems$[12], L_MenuItems;
 
+L_MenuItems:
     set @menu, @menu - 1;
     if (@menu == @ct)
         goto L_menu;
@@ -154,7 +158,7 @@ L_nloop_skip:
 
 L_consume:
     mes "[Injured Mouboo]";
-    mes "The mouboo " + @verb$ + " your " + getitemname(@choice$) + ".";
+    mes "The mouboo " + @verb$ + " your " + getitemlink(@choice$) + ".";
     delitem @choice$, 1;
     next;
     if (@choice$ == "LargeHealingPotion")
@@ -166,6 +170,7 @@ L_consume:
 
 L_do_heal:
     callfunc "QuestMoubooHeal";
+    end;
 
 L_kill:
     mes "[Injured Mouboo]";
@@ -184,6 +189,7 @@ L_kill_success:
     set @Q_status, @STATE_KILLED_MOUBOO;
     callsub S_update_var;
     next;
+    goto L_dead;
 
 L_dead:
     mes "[Dead Mouboo]";
@@ -191,7 +197,7 @@ L_dead:
     getinventorylist;
     if (@inventorylist_count == 100)
         goto L_nopickup;
-    getitem "BlackTurtleneckSweater", 1;
+    getitem "BlackTurtleneck", 1;
     mes "You pull out the sweater and stuff it into your backpack.";
     set @Q_status, @STATE_TOOK_KILL_REWARD;
     callsub S_update_var;
@@ -209,6 +215,9 @@ L_nopickup:
 L_healed:
     mes "[Mouboo]";
     mes "The mouboo is sleeping soundly, smiling in its dreams.";
+    close;
+
+L_Close:
     close;
 
 S_update_var:

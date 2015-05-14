@@ -3,22 +3,19 @@
 // - nibble 4 and 5 of QUEST_SouthTulimshar
 // - in FLAGS, FLAG_OPENED_UNDERGROUND
 
-002-4.gat,100,37,0|script|Button#mine-2|400,0,0,
+002-4,100,37,0|script|Button#mine-2|400,0,0
 {
-    // This NPC previously used the variable TMW_Quest
-    callfunc "ClearVarTMW_Quest";
-
     set @state, ((QUEST_SouthTulimshar & BYTE_2_MASK) >> BYTE_2_SHIFT);
 
     if (@state == 24) goto L_Trigger_2;
     if (@state == 23) goto L_Trigger_Wrong_2;
     if (@state == 22) goto L_Trigger_Wrong_2;
 
-    mes "There is a large button on the ground.  A key hole appears on the button.";
+    mes "There is a large button on the ground. A key hole appears on the button.";
     goto L_Close;
 
 L_Trigger_Wrong_2:
-    mes "There is a large button on the ground.  A key hole appears on the button.";
+    mes "There is a large button on the ground. A key hole appears on the button.";
     menu
         "Put the key in, turn right.", L_Right_Wrong_2,
         "Put the key in, turn left.", L_Left_Wrong_2,
@@ -37,7 +34,7 @@ L_Left_Wrong_2:
     goto L_Close;
 
 L_Trigger_2:
-    mes "There is a large button on the ground.  A key hole appears on the button.";
+    mes "There is a large button on the ground. A key hole appears on the button.";
     menu
         "Put the key in, turn right.", L_Right_2,
         "Put the key in, turn left.", L_Left_2,

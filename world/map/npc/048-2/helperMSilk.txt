@@ -4,7 +4,7 @@
 // Janika asks for Silk Cocoons for repairing the books
 // can give second hint about visitor in investigation subquest
 
-048-2.gat,104,103,0|script|Janika|363,
+048-2,104,103,0|script|Janika|363
 {
     set @investigate, ((QUEST_BlueSage & $@Q_BlueSageInvestigate_MASK) >> $@Q_BlueSageInvestigate_SHIFT);
     set @silk_amount, 80;
@@ -22,9 +22,11 @@ L_Quest:
     mes "\"This is going to be difficult...";
     mes "Oh, hello. You don't have " + @silk_amount + " Silk Cocoons with you, do you? I need them for the book covers and binding of some of the more valuable books we're trying to recreate.\"";
     menu
-        "I have!",-,
+        "I have!",L_TurnIn,
         "I haven't, but I can try to get some.",L_Investigate,
         "No.",L_Investigate;
+
+L_TurnIn:
     if(countitem("SilkCocoon") < @silk_amount)
         goto L_NoItem;
     delitem "SilkCocoon", @silk_amount;

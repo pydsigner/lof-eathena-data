@@ -1,11 +1,9 @@
 // Angus the craftsman
 
-018-2.gat,31,39,0|script|Angus|147,
+018-2,31,39,0|script|Angus|147
 {
     set @honorific$, "lad";
     if (Sex == 0) set @honorific$, "lass";
-
-    callfunc "ClearVariables";
 
     set @inspector, ((QUEST_Hurnscald & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT);
 
@@ -13,7 +11,7 @@
 
     mes "[Angus]";
     mes "Angus is tinkering with some mechanical concoction.";
-    mes "\"It keeps breakin' left an' right...  fortunat'ly I put in redundancies everywhere, but I haf' to keep repairin'.\"";
+    mes "\"It keeps breakin' left an' right... fortunat'ly I put in redundancies everywhere, but I haf' to keep repairin'.\"";
     goto L_Close;
 
 L_NohMask:

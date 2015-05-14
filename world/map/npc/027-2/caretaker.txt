@@ -2,13 +2,11 @@
 // TODO: add dialog/code for giving more letters
 //       Airlia supports receiving an infinate number of letters
 
-027-2.gat,24,25,0|script|Caretaker|159,
+027-2,24,25,0|script|Caretaker|159
 {
-    set @hw2011_npc_id, $@hw2011_npc_caretaker;
-    if (gettime(7) == $@hw2011_year && gettime(6) == 10 && gettime(5) >= $@hw2011_start_day)
-        goto L_TrickOrTreat;
+    set @halloween_npc_id, $@halloween_npc_caretaker;
+    callfunc "TrickOrTreat";
 
-L_Begin:
     if (QUEST_Graveyard_Caretaker == 1) goto L_Return_Dialog;
     if (QUEST_Graveyard_Caretaker == 2) goto L_Has_Letter;
     if (QUEST_Graveyard_Caretaker == 3) goto L_Delivered_Letter;
@@ -20,8 +18,7 @@ L_Begin:
     next;
     menu
         "And what are you?", L_Who,
-        "That's right, so move and let me kill that demon behind you.", -;
-    close;
+        "That's right, so move and let me kill that demon behind you.", L_Close;
 
 L_Who:
     mes "[Caretaker]";
@@ -29,7 +26,9 @@ L_Who:
     mes "Now, I care only for my wife. I watch over her... make sure that nobody ever does her harm.\"";
     next;
     menu
-        "You guard her corpse day and night?", -;
+        "You guard her corpse day and night?", L_WatchCorpse;
+
+L_WatchCorpse:
     mes "[Caretaker]";
     mes "\"I am bound to this wretched place by the very same spell that was cast to keep the undead from leaving. Until the day that this cemetery is free from its curse, I shall remain within these gates.\"";
     set QUEST_Graveyard_Caretaker, 1;
@@ -43,8 +42,7 @@ L_Return_Dialog:
     menu
         "What's the favor?", L_Favor,
         "I'm sure I can, for a price.", L_Favor,
-        "Sorry, I am busy.", -;
-    close;
+        "Sorry, I am busy.", L_Close;
 
 L_Favor:
     mes "[Caretaker]";
@@ -55,20 +53,17 @@ L_Favor:
     menu
         "I will take it to her.", L_Receive,
         "I will help you. Where can I find your daughter?", L_Receive,
-        "Sorry, but I am too busy.", -;
-    close;
+        "Sorry, but I am too busy.", L_Close;
 
 L_Receive:
     set QUEST_Graveyard_Caretaker, 2;
     mes "You receive the letter and put it in a special place so it doesn't get lost in your inventory.";
-    if (@menu == 2)
-        goto L_Location;
-    close;
+    next;
+    if (@menu != 2)
+        close;
+    goto L_Location;
 
 L_Location:
-    next;
-
-L_Location_Real:
     mes "[Caretaker]";
     mes "\"Her name is Airlia. She works at the town hall in Hurnscald. Thank you for your help.\"";
     close;
@@ -78,17 +73,18 @@ L_Has_Letter:
     mes "\"Have you found my daughter?\"";
     next;
     menu
-        "Not yet.", -,
-        "I'll get there when I get there.", -,
-        "Where did you say I could find her?", L_Location_Real;
-    close;
+        "Not yet.", L_Close,
+        "I'll get there when I get there.", L_Close,
+        "Where did you say I could find her?", L_Location;
 
 L_Delivered_Letter:
     mes "[Caretaker]";
     mes "\"Have you found my daughter?\"";
     next;
     menu
-        "Yes.", -;
+        "Yes.", L_Next;
+
+L_Next:
     mes "[Caretaker]";
     mes "\"Thank you for delivering my letter.\"";
     set QUEST_Graveyard_Caretaker, 4;
@@ -100,8 +96,7 @@ L_Give_New_Letter:
     next;
     menu
         "Sure.", L_Give_New_Letter_Real,
-        "I'm too busy right now.", -;
-    close;
+        "I'm too busy right now.", L_Close;
 
 L_Give_New_Letter_Real:
     set QUEST_Graveyard_Caretaker, 5;
@@ -111,24 +106,12 @@ L_Give_New_Letter_Real:
     mes "\"Thank you.\"";
     close;
 
-OnTimer3000:
-    monster "027-2.gat", 29, 21, "Caretaker's Wife", 1044, 1, "Caretaker::OnWifeDeath";
-    stopnpctimer;
-    setnpctimer 0;
+L_Close:
+    close;
+}
+027-2,28,22,0|script|Joan|409
+{
+    mes "[Joan]";
+    mes "...";
     end;
-
-OnInit:
-    monster "027-2.gat", 29, 21, "Caretaker's Wife", 1044, 1, "Caretaker::OnWifeDeath";
-    end;
-
-OnWifeDeath:
-    mapannounce "027-2.gat", "NO! YOU KILLED MY WIFE!", 0;
-    gmcommand "@l I killed the caretaker's wife!";
-    gmcommand "@ban +5mn " + strcharinfo(0);
-    initnpctimer;
-    end;
-
-L_TrickOrTreat:
-    callfunc "TrickOrTreat2011";
-    goto L_Begin;
 }

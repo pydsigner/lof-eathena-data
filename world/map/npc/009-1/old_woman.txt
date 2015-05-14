@@ -1,29 +1,26 @@
 // Old woman
 
-009-1.gat,29,43,0|script|Old Woman|154,
+009-1,29,43,0|script|Old Woman|154
 {
-    callfunc "ClearVariables";
-
     set @inspector, ((QUEST_Hurnscald & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT);
 
     if (BaseLevel < 40) goto L_Lower;
 
     mes "[Old Woman]";
     mes "\"Hello deary.\"";
-    next;
-    goto L_Continue;
+    if ((@inspector >= 1  && @inspector <= 7) || @inspector == 9)
+        goto L_NohMask;
+    close;
 
 L_Lower:
     mes "[Old Woman]";
     mes "\"Watch out for these flowers. They don't like to be messed with.\"";
-    next;
-
-L_Continue:
     if ((@inspector >= 1  && @inspector <= 7) || @inspector == 9)
         goto L_NohMask;
-    goto L_Close;
+    close;
 
 L_NohMask:
+    next;
     if (@inspector == 7)
         goto L_NohMask_Alibi;
     callfunc "ProcessEquip";
@@ -47,7 +44,9 @@ L_NohMask_FirstAsk:
 
 L_NohMask_Alibi:
     menu
-        "Was your husband with you at home all night the last night that the troupe was in town?", -;
+        "Was your husband with you at home all night the last night that the troupe was in town?", L_Next;
+
+L_Next:
     mes "[Old Woman]";
     mes "\"Yes, we were both at home all night.\"";
     set @inspector, 8;
@@ -83,15 +82,4 @@ L_Close:
 S_Update_Mask:
     set QUEST_Hurnscald, (QUEST_Hurnscald & ~(NIBBLE_3_MASK)) | (@inspector << NIBBLE_3_SHIFT);
     return;
-
-OnPCDieEvent:
-    if (countitem(E10_TOKEN_ID) < 1) end;
-    delitem E10_TOKEN_ID, 1;
-    getitem "DarkPetal", 1;
-    message strcharinfo(0), "As you fall, the dark rose crumbles...";
-    if ((Easter_2010_QuestState >> E10_STATE_ROSE_SHIFT) & E10_STATE_ROSE_MASK >= E10_STATE_ROSE_ROSE_USED) end;
-    message strcharinfo(0), "There is a strange feeling pulling at you. A place... unfamiliar, yet unavoidable.";
-    message strcharinfo(0), "But you do not move... the force is too distant, too weak, a shadow of the power that it might have once been.";
-    set Easter_2010_QuestState, (Easter_2010_QuestState & ~(E10_STATE_ROSE_MASK << E10_STATE_ROSE_SHIFT)) | (E10_STATE_ROSE_ROSE_USED << E10_STATE_ROSE_SHIFT);
-    end;
 }

@@ -1,31 +1,16 @@
-006-1.gat,23,100,0|script|Pachua|143,
+006-1,24,113,0|script|Pachua|143
 {
+    callfunc "PCtoNPCRange";
+
+    set @halloween_npc_id, $@halloween_npc_pachua;
+    callfunc "TrickOrTreat";
+
     set @LEATHER_PATCH_PRICE, 300;
-// @wants_leather_patch is used as boolean
     set @wants_leather_patch, QUEST_Forestbow_state & NIBBLE_4_MASK;
-
-    if ((gettime(5) >= $@xmas2011_start_day) && (gettime(5) < $@xmas2011_reward_start_day) && (gettime(6) == 12) && (gettime(7) == $@xmas2011_year))
-        set @wants_leather_patch, @wants_leather_patch | (xmas11 & $@xmas11_talkedToChief);
-
-    set $@xmas2011_start_day, 10;
-    set $@xmas2011_reward_start_day, 25;
-
-// lines belong to easter 2011:
-//    set @month, 4;
-//    set @start_day, 15;
-//    set @end_day, 30;
 
     if (QUEST_MIRIAM_cheat != 0) goto L_warp_cheat;
     if (QUEST_MIRIAM_start != 0) goto L_smoke;
-
-// lines belong to easter 2011:
-//    if (gettime(6) == @month && gettime(5) >= @start_day && gettime(5) <= @end_day && QUEST_Easter11 == 1) goto L_Basket;
-//    if (gettime(6) == @month && gettime(5) >= @start_day && gettime(5) <= @end_day && QUEST_Easter11 == 2) goto L_MakeBasket;
-//    if (gettime(6) == @month && gettime(5) >= @start_day && gettime(5) <= @end_day && QUEST_Easter11 == 3) goto L_SeeBunny;
-
-    set @hw2011_npc_id, $@hw2011_npc_pachua;
-    if (gettime(7) == $@hw2011_year && gettime(6) == 10 && gettime(5) >= $@hw2011_start_day)
-        goto L_TrickOrTreat;
+    goto L_Begin;
 
 L_Begin:
     mes "[Chief Pachua]";
@@ -40,6 +25,7 @@ L_Begin:
     mes "";
     mes "\"For generations my tribe has been crafting special clothes out of different items.\"";
     next;
+    goto L_Check_Shops;
 
 L_Check_Shops:
     if((countitem("JeansShorts") > 0 && countitem("SnakeSkin") > 9) && (countitem("FancyHat") > 0 && countitem("SnakeSkin") > 1)) goto L_Super_store;
@@ -53,7 +39,7 @@ L_Check_Shops:
     if (@wants_leather_patch)
         menu
             "Wait, can you make a leather patch for me?", L_leather_patch,
-            "OK, bye.", -;
+            "OK, bye.", L_Close;
     goto L_Close;
 
 S_CheckStuff:
@@ -78,11 +64,10 @@ L_Super_store:
             "Snake Skin Chaps sound good.", L_BuyChaps,
             "Can you make a leather patch?", L_leather_patch,
             "Not now, maybe later.", L_NoDeal;
-    if (!@wants_leather_patch)
-        menu
-            "Cowboy hat, please.", L_BuyCowboy,
-            "Snake Skin Chaps sound good.", L_BuyChaps,
-            "Not now, maybe later.", L_NoDeal;
+    menu
+        "Cowboy hat, please.", L_BuyCowboy,
+        "Snake Skin Chaps sound good.", L_BuyChaps,
+        "Not now, maybe later.", L_NoDeal;
 
 L_Cowboy_store:
     callsub S_CheckStuff;
@@ -100,10 +85,9 @@ L_Cowboy_store:
             "Yes, that's fine.", L_BuyCowboy,
             "Can you make a leather patch?", L_leather_patch,
             "On second thought, maybe later.", L_NoDeal;
-    if (!@wants_leather_patch)
-        menu
-            "Yes, that's fine.", L_BuyCowboy,
-            "On second thought, maybe later.", L_NoDeal;
+    menu
+        "Yes, that's fine.", L_BuyCowboy,
+        "On second thought, maybe later.", L_NoDeal;
 
 L_Chaps_store:
     callsub S_CheckStuff;
@@ -120,16 +104,15 @@ L_Chaps_store:
         menu
             "Yes, that's fine.", L_BuyChaps,
             "On second thought, maybe later.", L_NoDeal;
-    if (@wants_leather_patch)
-        menu
-            "Yes, that's fine.", L_BuyChaps,
-            "Can you make a leather patch?", L_leather_patch,
+    menu
+        "Yes, that's fine.", L_BuyChaps,
+        "Can you make a leather patch?", L_leather_patch,
             "On second thought, maybe later.", L_NoDeal;
 
 L_BuyChaps:
     if (Zeny < 10000) goto L_NoMoney;
     if (countitem("JeansShorts") < 1) goto L_NoJeans;
-    if (countitem("SnakeSkin") < 10) goto L_NoSkin;
+    if (countitem("SnakeSkin") < 10) goto L_NoSkins;
     set Zeny, Zeny - 10000;
     delitem "SnakeSkin", 10;
     delitem "JeansShorts", 1;
@@ -139,7 +122,7 @@ L_BuyChaps:
 L_BuyCowboy:
     if (Zeny < 5000) goto L_NoMoney;
     if (countitem("FancyHat") < 1) goto L_NoFancy;
-    if (countitem("SnakeSkin") < 2) goto L_NoSkin;
+    if (countitem("SnakeSkin") < 2) goto L_NoSkins;
     set Zeny, Zeny - 5000;
     delitem "SnakeSkin", 2;
     delitem "FancyHat", 1;
@@ -158,13 +141,14 @@ L_Cowboy_black:
 L_leather_patch:
     mes "[Chief Pachua]";
     mes "";
-    mes "\"If you just want a piece of leather, then yes, I can make that.  Bring me a snake skin and " + @LEATHER_PATCH_PRICE + " GP.\"";
+    mes "\"If you just want a piece of leather, then yes, I can make that. Bring me a snake skin and " + @LEATHER_PATCH_PRICE + " GP.\"";
     next;
     menu
-        "Here you are.", -,
+        "Here you are.", L_Next,
         "OK, I'll be back later.", L_Close,
         "That's too expensive!.", L_NoDeal;
 
+L_Next:
     if (countitem("SnakeSkin") < 1) goto L_NoSkins;
     if (Zeny < @LEATHER_PATCH_PRICE) goto L_NoMoney;
     getinventorylist;
@@ -253,78 +237,4 @@ L_warp_cheat:
     message strcharinfo(0), "Pachua releases a ring of smoke towards the sky! But, by the look on his face, you can tell he is suspicious about your methods...";
     set @warp_cheat, 1;
     end;
-
-L_Basket:
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"For generations my tribe has been crafting special clothes out of different items.\"";
-    mes "\"Maybe if you bring me the right materials I can make something for you.\"";
-    next;
-    menu
-        "Do you work only with clothes? Because I was looking for a basket.", -;
-    mes "\"A basket? In our tribe, we craft baskets of all kinds using only reeds. This basket, you need it to carry your items?\"";
-    menu
-        "No. It is for the Easter Bunny. I offered to get him one.", -;
-    mes "\"I appreciate your attitude. Maybe I can help you with that.\"";
-    menu
-        "I would be really grateful if you could do that!", -,
-        "Nah, I decided not to do that stupid quest.", L_Close,
-        "I would prefer to talk to you about other stuff.", L_Begin; //should go to pachuas's regular chat
-    set QUEST_Easter11, 2;
-
-L_MakeBasket:
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"I will need you to gather reeds for me.\"";
-    mes "\"5 bundles should do it.\"";
-    mes "\"You should be able to get those from mouboos as they graze.\"";
-    menu
-        "I have the Reeds!", -,
-        "Ok, I will be back soon", L_Close,
-        "I changed my mind, forget about it", L_Close,
-        "Can I talk to you about another stuff?", L_Begin; //should go to pachuas's regular chat
-
-    if(countitem("ReedBundle") < 5) goto L_EasterNotEnough;
-    if(countitem("ReedBundle") >= 5) goto L_EasterEnough;
-    goto L_Close;
-
-L_EasterNotEnough:
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"You do not have enough Reed Bundles for me to work with.\"";
-    mes "\"Go gather more.\"";
-    goto L_Close;
-
-L_EasterEnough:
-    getinventorylist;
-    if (@inventorylist_count == 100 && countitem("ReedBundle") > 5) goto L_EasterTooMany;
-    if(countitem("ReedBundle") < 5) goto L_EasterNotEnough;
-    delitem "ReedBundle", 5;
-    getitem "EasterBasket", 1;
-    set QUEST_Easter11, 3;
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"You have gathered enough reeds for me to make the basket.\"";
-    mes "He skillfully soaks the reeds you brought him,";
-    mes "then swiftly weaves them into a basket shape.";
-    mes "Next, he places the damp basket in the sun to dry for a minute before handing it over to you.";
-    mes "\"Here is your Easter Basket.\"";
-    goto L_Close;
-
-L_EasterTooMany:
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"You don't have room for the Easter Basket. Come back later.\"";
-    goto L_Close;
-
-L_SeeBunny:
-    mes "[Chief Pachua]";
-    mes "";
-    mes "\"You need to return to the Easter Bunny now.\"";
-    next;
-    goto L_Begin;
-
-L_TrickOrTreat:
-    callfunc "TrickOrTreat2011";
-    goto L_Begin;
 }

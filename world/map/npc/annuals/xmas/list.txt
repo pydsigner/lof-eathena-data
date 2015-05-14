@@ -2,13 +2,14 @@
 // author: Jenalya, Chayenne, cinderweb, wushin
 // please see #XmasConfig
 
-function|script|XmasCheckList|,
+function|script|XmasCheckList
 {
     set @xmas_list_count, 0;
     set @xmas_list_loop, 0;
 
     if((@xmas_list_deliver) || !(@xmas_list_gather))
         goto L_Return;
+    goto L_Loop;
 
 L_Loop:
     if(XMASTIME & $@xmas_child_list[@xmas_list_loop])
@@ -46,7 +47,7 @@ L_Return:
     return;
 }
 
-function|script|XmasList|,
+function|script|XmasList
 {
     callfunc "XmasStates";
 
@@ -78,10 +79,11 @@ L_Return:
     return;
 }
 
-function|script|XmasListList|,
+function|script|XmasListList
 {
     set @xmas_list_loop, 0;
     set @xmas_child_loop, 0;
+    goto L_Loop;
 
 L_Loop:
     set @xmas_child_loop, ($@xmas_child_list[@xmas_list_loop]);

@@ -1,5 +1,5 @@
 // This NPC makes potions and dyes
-011-1.gat,117,77,0|script|Rauk|103,
+011-1,117,77,0|script|Rauk|103
 {
     // Setzer quest/monster oil quest participation
     set @SETZER_INITIAL, 0;
@@ -44,6 +44,7 @@
     set @menuitems$[@c], "Mana potion.";
     set @menuID[@c], @CHOICE_MANA_POTION;
     set @c, @c + 1;
+    goto L_post_mana_potion_c;
 
 L_post_mana_potion_c:
     if (QUEST_clothdyer_knowsdye >= @QUEST_CAN_GET_DYE_HERE)
@@ -71,6 +72,7 @@ L_pre_dyeing:
     set @menuitems$[@c], "Actually, can you make dye?";
     set @menuID[@c], @CHOICE_DYEING_INTRO;
     set @c, @c + 1;
+    goto L_certain_condition;
 
 L_certain_condition:
     if (!@wants_sulphur)
@@ -78,38 +80,43 @@ L_certain_condition:
     set @menuitems$[@c], "Can you make sulphur powder?";
     set @menuID[@c], @CHOICE_SULPHUR_POWDER;
     set @c, @c + 1;
+    goto L_post_sulphur_option;
 
 L_post_sulphur_option:
     if (!@wants_ironpowder)
-        goto L_post_ironpowder_option;
+        goto L_post_ironpwd_option;
     set @menuitems$[@c], "Can you make iron powder?";
     set @menuID[@c], @CHOICE_IRON_POWDER;
     set @c, @c + 1;
+    goto L_post_ironpwd_option;
 
-L_post_ironpowder_option:
+L_post_ironpwd_option:
     if (@Q_status == @SETZER_INITIAL)
         goto L_post_monster_oil;
     set @menuitems$[@c], "Can you make monster oil?";
     set @menuID[@c], @CHOICE_MONSTER_OIL;
     set @c, @c + 1;
+    goto L_post_monster_oil;
 
 L_post_monster_oil:
     set @menuitems$[@c], "No thanks.";
     set @menuID[@c], @CHOICE_ABORT;
     set @c, @c + 1;
+    goto L_main_menu;
 
 L_main_menu:
 
     menu
-        @menuitems$[0], -,
-        @menuitems$[1], -,
-        @menuitems$[2], -,
-        @menuitems$[3], -,
-        @menuitems$[4], -,
-        @menuitems$[5], -,
-        @menuitems$[6], -,
-        @menuitems$[7], -;
+        @menuitems$[0], L_MenuItems,
+        @menuitems$[1], L_MenuItems,
+        @menuitems$[2], L_MenuItems,
+        @menuitems$[3], L_MenuItems,
+        @menuitems$[4], L_MenuItems,
+        @menuitems$[5], L_MenuItems,
+        @menuitems$[6], L_MenuItems,
+        @menuitems$[7], L_MenuItems;
 
+L_MenuItems:
     set @menu, @menu - 1;
 
     if (@menu >= @c)
@@ -136,11 +143,13 @@ L_main_menu:
 
 L_iron_powder:
     mes "[Rauk the Alchemist]";
-    mes "\"Iron powder?  Hmm, I can extract some iron powder out of a chunk of iron ore, but that will require me to dissolve it.  If you give me a chunk of iron ore and 100 GP for the acid, I can do it.\"";
+    mes "\"Iron powder?  Hmm, I can extract some iron powder out of a chunk of iron ore, but that will require me to dissolve it. If you give me a chunk of iron ore and 100 GP for the acid, I can do it.\"";
     next;
     menu
         "Never mind.", L_abort,
-        "Here you are!", -;
+        "Here you are!", L_Next;
+
+L_Next:
     if (countitem("IronOre") < 1)
         goto L_iron_powder_noore;
     if (Zeny < 100)
@@ -154,37 +163,38 @@ L_iron_powder:
     set Zeny, Zeny - 100;
     getitem "IronPowder", 4;
     mes "[Rauk the Alchemist]";
-    mes "Rauk places your chunk of ore in a strange glass container, then pours a steaming yellow liquid over it.  Before your eyes, the ore dissolves.";
+    mes "Rauk places your chunk of ore in a strange glass container, then pours a steaming yellow liquid over it. Before your eyes, the ore dissolves.";
     next;
     mes "[Rauk the Alchemist]";
-    mes "Rauk pours another liquid over the resultant mixture, then pours the result through a piece of cloth placed in a funnel, followed by a cup of water.  He removes the residual metal powder from the cloth and hands it to you.";
+    mes "Rauk pours another liquid over the resultant mixture, then pours the result through a piece of cloth placed in a funnel, followed by a cup of water. He removes the residual metal powder from the cloth and hands it to you.";
     mes "\"This is about as fine as I can make it without mechanical help.\"";
     close;
 
 L_iron_powder_noore:
     mes "[Rauk the Alchemist]";
-    mes "\"I do need a chunk of iron ore.  Please return when you have one.\"";
+    mes "\"I do need a chunk of iron ore. Please return when you have one.\"";
     close;
 
 L_iron_powder_nozeny:
     mes "[Rauk the Alchemist]";
-    mes "\"I'm sorry, but I must ask that you pay 100 GP-- the acid I use is not cheap.\"";
+    mes "\"I'm sorry, but I must ask that you pay 100 GP – the acid I use is not cheap.\"";
     close;
 
 L_iron_powder_full:
     mes "[Rauk the Alchemist]";
-    mes "\"I don't think that you have room to carry this.  Please come back later.\"";
+    mes "\"I don't think that you have room to carry this. Please come back later.\"";
     close;
 
 L_sulphur:
     mes "[Rauk the Alchemist]";
-    mes "\"Oh, that is easy.  Bring me three piles of volcanic ash and three mauve leaves, and I will extract twelve piles of sulphur ash for you.\"";
+    mes "\"Oh, that is easy. Bring me three piles of volcanic ash and three mauve leaves, and I will extract twelve piles of sulphur ash for you.\"";
     next;
     menu
         "I will be back.", L_abort,
         "No, I won't!", L_abort,
-        "Here you are!", -;
+        "Here you are!", L_Next1;
 
+L_Next1:
     if (countitem("PileOfAsh") < 3)
         goto L_sulphur_noash;
     if (countitem("MauveHerb") < 3)
@@ -200,10 +210,10 @@ L_sulphur:
     delitem "MauveHerb", 3;
     getitem "SulphurPowder", 12;
     mes "[Rauk the Alchemist]";
-    mes "You watch Rauk burn the mauve leaves in the midst of the ashes.  He then dissolves the result and pours it through a filter, finally heating up the residual liquid.";
+    mes "You watch Rauk burn the mauve leaves in the midst of the ashes. He then dissolves the result and pours it through a filter, finally heating up the residual liquid.";
     next;
     mes "[Rauk the Alchemist]";
-    mes "The water having evaporated, only some yellow powder is left over.  Rauk carefully pours it into your hand.";
+    mes "The water having evaporated, only some yellow powder is left over. Rauk carefully pours it into your hand.";
     mes "\"This should be precisely twelve half-ounces of sulphur powder.\"";
     close;
 
@@ -219,14 +229,14 @@ L_sulphur_nomauve:
 
 L_sulphur_nospace:
     mes "[Rauk the Alchemist]";
-    mes "\"Oh dear.  You don't seem to be able to carry the sulphur powder.\"";
+    mes "\"Oh dear. You don't seem to be able to carry the sulphur powder.\"";
     close;
 
 L_mana_potion:
     mes "[Rauk the Alchemist]";
-    mes "\"Humh... I do believe that I have a recipe somewhere.  One moment...\"";
+    mes "\"Humh... I do believe that I have a recipe somewhere. One moment...\"";
     mes "Rauk pulls a small book out of his sleeve and leafs through it.";
-    mes "\"Aha, here we are.  Hmm, I'm not convinced that this is the best possible recipe...\"";
+    mes "\"Aha, here we are. Hmm, I'm not convinced that this is the best possible recipe...\"";
     next;
     mes "[Rauk the Alchemist]";
     mes "\"I shall need one pearl, one bottle of water, thirty mauve leaves, twenty gamboge leaves, and five piles of volcanic ash.\"";
@@ -234,7 +244,6 @@ L_mana_potion:
     menu
         "Here you are!", L_get_mana_potion,
         "Never mind.", L_main_menu;
-    goto L_main_menu;
 
 L_get_mana_potion:
     if(countitem("MauveHerb") < 30)
@@ -262,7 +271,7 @@ L_get_mana_potion:
     delitem "BottleOfWater", 1;
     getitem "ManaPotion", 1;
     mes "[Rauk the Alchemist]";
-    mes "Rauk grinds the leaves, then crushes the pearl.  Taking out a small charcoal oven, he heats up your water bottle and dissolves first the pearl powder, then the ashes.";
+    mes "Rauk grinds the leaves, then crushes the pearl. Taking out a small charcoal oven, he heats up your water bottle and dissolves first the pearl powder, then the ashes.";
     mes "The brew begins to bubble violently.";
     next;
     mes "[Rauk the Alchemist]";
@@ -270,13 +279,13 @@ L_get_mana_potion:
     mes "He then mixes the residual paste with the leaves, stirs in a little water from the pond and fills the result into a separate bottle.";
     next;
     mes "[Rauk the Alchemist]";
-    mes "\"Here you are.  I hope that this is what you wanted.\"";
+    mes "\"Here you are. I hope that this is what you wanted.\"";
     next;
     goto L_main_menu;
 
 L_mana_potion_toomuch:
     mes "[Rauk the Alchemist]";
-    mes "\"You look quite burdened already.  Why don't you drop off a few things first, and come back later?\"";
+    mes "\"You look quite burdened already. Why don't you drop off a few things first, and come back later?\"";
     next;
     goto L_main_menu;
 
@@ -289,7 +298,7 @@ L_mana_potion_lacking:
 L_iron:
     set @COST_PER_IRON_POTION, 2;
 
-    mes "\" To make them, I'm going to need " + @COST_PER_IRON_POTION + " Small Mushrooms per Iron Potion.  How many Iron Potions would you like?\"";
+    mes "\" To make them, I'm going to need " + @COST_PER_IRON_POTION + " Small Mushrooms per Iron Potion. How many Iron Potions would you like?\"";
     input @count;
 
     if (@count == 0)
@@ -309,7 +318,7 @@ L_iron:
 L_concentration:
     set @COST_PER_CONCENTRATION_POTION, 2;
 
-    mes "\" To make them, I'm going to need " + @COST_PER_CONCENTRATION_POTION + " Pink Petals per Concentration Potion.  How many Concentration Potions would you like?\"";
+    mes "\" To make them, I'm going to need " + @COST_PER_CONCENTRATION_POTION + " Pink Petals per Concentration Potion. How many Concentration Potions would you like?\"";
     input @count;
 
     if (@count == 0)
@@ -344,10 +353,12 @@ L_dyeing_intro:
     mes "Rauk seems to be lost in his thoughts.";
     next;
     menu
-        "I only want to dye clothes, though...", -,
+        "I only want to dye clothes, though...", L_Next2,
         "What's a 'Wumpus egg'?", L_wumpus_egg_intro,
         "What's an 'Obsidian Spork'?", L_obsidian_spork_intro,
         "Er, never mind...", L_abort;
+
+L_Next2:
     mes "[Rauk the Alchemist]";
     mes "\"Oh, just for clothes? Well, that is easy. I can make red, yellow, light blue, orange, pink, green, dark blue, black and purple dye, if you can get me the ingredients for it.\"";
     next;
@@ -358,7 +369,7 @@ L_wumpus_egg_intro:
     mes "[Rauk the Alchemist]";
     mes "Rauk's eyes brighten up.";
     mes "\"Ah, a wumpus egg is one of the most powerful catalysts out there, useful for transmutation and transchromation! Unfortunately the Common Wumpus is almost completely extinct these days, so they are hard to find.";
-    mes "Should you find one, please let me know-- I will pay well for one!\"";
+    mes "Should you find one, please let me know – I will pay well for one!\"";
     close;
 
 L_obsidian_spork_intro:
@@ -385,16 +396,16 @@ L_pick_colour:
         "Purple", L_purple,
         "Dark Green", L_dark_green,
         "Nothing, really.", L_abort;
-    close;
 
 L_description:
     mes "[Rauk the Alchemist]";
-    mes "\"The kinds of dyes I know are made from herbs-- alizarin for red, gamboge for yellow, cobalt for blue, and mauve as binding agent for dark colors.\"";
+    mes "\"The kinds of dyes I know are made from herbs – alizarin for red, gamboge for yellow, cobalt for blue, and mauve as binding agent for dark colors.\"";
     next;
     mes "[Rauk the Alchemist]";
     mes "\"Some of the colors need more ingredients, including some that you can't find here, so I have to charge money for them.";
     mes "Oh, and for a proper dark blue and purple I also need a pearl; without pearl dust they would not shimmer properly.\"";
     next;
+    goto L_description_quick;
 
 L_description_quick:
     menu
@@ -408,7 +419,9 @@ L_description_quick:
         "What do you need for black dye?", L_d_black,
         "What do you need for purple dye?", L_d_purple,
         "What do you need for dark green dye?", L_d_dark_green,
-        "Actually...", -;
+        "Actually...", L_NextMenu;
+
+L_NextMenu:
     menu
         "Can you make some dye for me, please?", L_pick_colour,
         "Where can I get the herbs?", L_d_herbs,
@@ -417,7 +430,6 @@ L_description_quick:
         "Where can I find a pearl?", L_d_pearl,
         "Where can I find maggot slime?", L_d_maggot_slime,
         "I see. Thank you, and a good day to you!", L_abort;
-    close;
 
 L_d_herbs:
     mes "[Rauk the Alchemist]";
@@ -445,7 +457,7 @@ L_d_pearl:
 
 L_d_maggot_slime:
     mes "[Rauk the Alchemist]";
-    mes "\"As the name might have given away already, maggot slime is most easily obtained from maggots. Still, there are some other creatures-- such as bats-- that secrete a similar kind of slime that for alchemistic purposes is equivalent.\"";
+    mes "\"As the name might have given away already, maggot slime is most easily obtained from maggots. Still, there are some other creatures – such as bats – that secrete a similar kind of slime that for alchemistic purposes is equivalent.\"";
     next;
     goto L_description_quick;
 
@@ -454,7 +466,6 @@ L_intermediate:
         "Can you make some dye for me?", L_pick_colour,
         "Can you describe the ingredients?", L_description_quick,
         "Never mind.", L_abort;
-    close;
 
 L_ok:
     mes "[Rauk the Alchemist]";
@@ -498,7 +509,7 @@ L_yellow:
 
 L_yellow_fail:
     mes "[Rauk the Alchemist]";
-    mes "\"Without enough gamboge leaves-- I would need at least ten--, I can't make yellow dye for you.\"";
+    mes "\"Without enough gamboge leaves – I would need at least ten--, I can't make yellow dye for you.\"";
     next;
     goto L_intermediate;
 
@@ -568,7 +579,7 @@ L_d_green:
 
 L_d_no_green:
     mes "[Rauk the Alchemist]";
-    mes "\"Come back when you are a little more experienced.  I might be able to tell you how to make green dye then.\"";
+    mes "\"Come back when you are a little more experienced. I might be able to tell you how to make green dye then.\"";
     close;
 
 L_orange:
@@ -810,6 +821,7 @@ L_d_dark_green_quest:
     next;
     if (QUEST_clothdyer_knowsdye == @QUEST_CAN_GET_DYE_HERE)
         set QUEST_clothdyer_knowsdye, (rand(1000) + @QUEST_GUESS_BASE);
+    goto L_d_dark_green_q_main;
 
 L_d_dark_green_q_main:
     menu
@@ -817,12 +829,11 @@ L_d_dark_green_q_main:
         "So nobody else can wear clothes I dye?", L_dark_green_q_wear,
         "OK, what should I do?", L_dark_green_q_explain,
         "Let's figure it out!", L_dark_green_q_guess_0;
-    close;
 
 L_dark_green_q_wear:
     mes "[Rauk the Alchemist]";
     mes "\"The color stabilises after a week or so.";
-    mes "Others can wear the clothes you have dyed-- just make sure that you wear those clothes for a week before passing them on.\"";
+    mes "Others can wear the clothes you have dyed – just make sure that you wear those clothes for a week before passing them on.\"";
     next;
     goto L_d_dark_green_q_main;
 
@@ -841,11 +852,10 @@ L_dark_green_q_explain2:
         "Er... can you explain that again?", L_dark_green_q_explain2,
         "Let's do it!", L_dark_green_q_guess_0,
         "I don't have time for this.", L_intermediate;
-    close;
 
 L_dark_green_q_explain:
     mes "[Rauk the Alchemist]";
-    mes "\"We have to measure the balance between your light and your dark bile-- two of your humors-- and use that as the maggot slime concentration.\"";
+    mes "\"We have to measure the balance between your light and your dark bile – two of your humors – and use that as the maggot slime concentration.\"";
     mes "\"This will probably take several tries; for each try we need maggot slime from one maggot.\"";
     next;
     mes "[Rauk the Alchemist]";
@@ -856,12 +866,12 @@ L_dark_green_q_explain:
     next;
     mes "[Rauk the Alchemist]";
     mes "Rauk smiles.";
-    mes "\"But don't worry, I will happily do all this for free-- I rather enjoy these little games.\"";
+    mes "\"But don't worry, I will happily do all this for free – I rather enjoy these little games.\"";
     next;
     menu
         "Er... can you explain that again?", L_dark_green_q_explain,
         "Errr... what?", L_dark_green_q_explain2,
-        "Let's do it!", -,
+        "Let's do it!", L_dark_green_q_guess_0,
         "I don't have time for this.", L_intermediate;
 
 L_dark_green_q_guess_0:
@@ -874,17 +884,18 @@ L_dark_green_q_guess_0:
     mes "\"Now we need to figure out just how many thousandths you need. First, tell me how many tenths of an ounce you want to put in.\"";
     next;
     menu
-        "none", -,
-        "1 tenth", -,
-        "2 tenths", -,
-        "3 tenths", -,
-        "4 tenths", -,
-        "5 tenths", -,
-        "6 tenths", -,
-        "7 tenths", -,
-        "8 tenths", -,
-        "9 tenths", -;
+        "none", L_MenuItems1,
+        "1 tenth", L_MenuItems1,
+        "2 tenths", L_MenuItems1,
+        "3 tenths", L_MenuItems1,
+        "4 tenths", L_MenuItems1,
+        "5 tenths", L_MenuItems1,
+        "6 tenths", L_MenuItems1,
+        "7 tenths", L_MenuItems1,
+        "8 tenths", L_MenuItems1,
+        "9 tenths", L_MenuItems1;
 
+L_MenuItems1:
     set @menu, @menu - 1;
     set @guess_accumulator, @menu * 100;
 
@@ -894,17 +905,18 @@ L_dark_green_q_guess_0:
     mes "\"We now have " + @guess_accumulator + " thousandths of an ounce. How many hundredths of an ounce should I add?\"";
     next;
     menu
-        "none", -,
-        "1 hundredth", -,
-        "2 hundredths", -,
-        "3 hundredths", -,
-        "4 hundredths", -,
-        "5 hundredths", -,
-        "6 hundredths", -,
-        "7 hundredths", -,
-        "8 hundredths", -,
-        "9 hundredths", -;
+        "none", L_MenuItems2,
+        "1 hundredth", L_MenuItems2,
+        "2 hundredths", L_MenuItems2,
+        "3 hundredths", L_MenuItems2,
+        "4 hundredths", L_MenuItems2,
+        "5 hundredths", L_MenuItems2,
+        "6 hundredths", L_MenuItems2,
+        "7 hundredths", L_MenuItems2,
+        "8 hundredths", L_MenuItems2,
+        "9 hundredths", L_MenuItems2;
 
+L_MenuItems2:
     set @menu, @menu - 1;
     set @guess_accumulator, @guess_accumulator + (@menu * 10);
 
@@ -914,17 +926,18 @@ L_dark_green_q_guess_0:
     mes "\"These are now " + @guess_accumulator + " thousandths of an ounce. How many thousands more?\"";
     next;
     menu
-        "none", -,
-        "1 thousandth", -,
-        "2 thousandths", -,
-        "3 thousandths", -,
-        "4 thousandths", -,
-        "5 thousandths", -,
-        "6 thousandths", -,
-        "7 thousandths", -,
-        "8 thousandths", -,
-        "9 thousandths", -;
+        "none", L_MenuItems3,
+        "1 thousandth", L_MenuItems3,
+        "2 thousandths", L_MenuItems3,
+        "3 thousandths", L_MenuItems3,
+        "4 thousandths", L_MenuItems3,
+        "5 thousandths", L_MenuItems3,
+        "6 thousandths", L_MenuItems3,
+        "7 thousandths", L_MenuItems3,
+        "8 thousandths", L_MenuItems3,
+        "9 thousandths", L_MenuItems3;
 
+L_MenuItems3:
     set @menu, @menu - 1;
     set @guess_accumulator, @guess_accumulator + @menu;
 
@@ -945,7 +958,7 @@ L_dark_green_q_guess_0:
         goto L_dark_green_q_toomuch;
 
     if (@guess_accumulator + @QUEST_GUESS_BASE < QUEST_clothdyer_knowsdye)
-        goto L_dark_green_q_toolittle;
+        goto L_dark_green_q_little;
 
     // otherwise correct guess
 
@@ -966,7 +979,7 @@ L_dark_green_q_toomuch:
     mes "\"That was too much... you need fewer than " + @guess_accumulator + " thousandths, I think.";
     goto L_dark_green_q_again;
 
-L_dark_green_q_toolittle:
+L_dark_green_q_little:
     mes "Almost instantaneously, the mixture loses its colour and turns transparent. Rauk sighs.";
     mes "\"That was too little. Next time, try more than " + @guess_accumulator + " thousandths.";
     goto L_dark_green_q_again;
@@ -976,8 +989,7 @@ L_dark_green_q_again:
     next;
     menu
         "Yes!", L_dark_green_q_guess_0,
-        "No, I've had enough.", -;
-    close;
+        "No, I've had enough.", L_abort;
 
 L_dark_green_q_noslime:
     mes "[Rauk the Alchemist]";
@@ -991,10 +1003,12 @@ L_monster_oil:
     mes "\"I know how to create it, but you won't get it from me. It's far too dangerous; even the best alchemist may need multiple attempts and will risk blowing up! I can give you a recipe though, if you still are wanton.\"";
     next;
     menu
-        "Yes, tell me!", -,
+        "Yes, tell me!", L_Next3,
         "No, that sounds too dangerous.", L_abort;
+
+L_Next3:
     mes "[Rauk the Alchemist]";
-    mes "You will need a pearl, a pair of snake skins, two piles of volcanic ash, three black scorpion stingers-- and a golden scorpion stinger. In addition you must have plenty of herbs to stabilise the concoction; mauve, alizarin, cobalt and gamboge will do just fine.";
+    mes "You will need a pearl, a pair of snake skins, two piles of volcanic ash, three black scorpion stingers – and a golden scorpion stinger. In addition you must have plenty of herbs to stabilise the concoction; mauve, alizarin, cobalt and gamboge will do just fine.";
     next;
     mes "[Rauk the Alchemist]";
     mes "\"Take the pearl, skins, black stingers, ash, and cook briefly in a cauldron. Next add the mauve/alizarin/cobalt/gamboge as needed to stabilise into a black brew. Lastly, add the golden scorpion stinger and let boil briefly. And it's done.\"";
@@ -1007,7 +1021,6 @@ L_monster_oil:
 
 L_abort:
     close;
-
 
 L_Update_Var:
     set QUEST_Forestbow_state,

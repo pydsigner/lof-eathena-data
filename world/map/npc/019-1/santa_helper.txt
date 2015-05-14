@@ -2,9 +2,8 @@
 // and extended by wushin to be included in the annual
 // quest made seasonal and adapted to new scripting standards by Jenalya
 
-019-1.gat,74,75,0|script|Santa's Helper|105,
+019-1,74,75,0|script|Santa's Helper|105
 {
-    callfunc "ClearVariables";
     callfunc "XmasStates";
 
     if (($@xmas_time) && (@xmas_sh_done)) goto L_Done;
@@ -28,6 +27,7 @@ L_Quest:
     mes "\"Those monsters stole Santa's presents.";
     mes "If you help me, I'll give you something very nice\"";
     next;
+    goto L_Menu;
 
 L_Menu:
     menu

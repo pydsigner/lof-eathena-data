@@ -1,8 +1,26 @@
-013-2.gat,66,39,0|script|Old Wizard#_W|116,
+013-2,66,39,0|script|Old Wizard#_W|116
 {
     set @has_magic, getskilllv(SKILL_MAGIC);
     set MAGIC_FLAGS, MAGIC_FLAGS | MFLAG_KNOWS_OLD_WIZARD;
 
+    set @run, ((QUEST_NorthTulimshar & TWOBIT_8_MASK) >> TWOBIT_8_SHIFT);
+    set @state, ((QUEST_NorthTulimshar & NIBBLE_5_MASK) >> NIBBLE_5_SHIFT);
+    if ((@run == 2) && (@state == 13))
+        goto L_Deliver;
+    goto L_Start;
+
+L_Deliver:
+    menu
+        "I have a delivery for you", L_Delivery;
+
+L_Delivery:
+    mes "[Old Wizard]";
+    mes "\"Good now I can get to work on some stronger brew..\"";
+    set @state, 14;
+    callfunc "SetKylianQuest";
+    goto L_Close;
+
+L_Start:
     mes "[Old Wizard]";
     mes "\"Welcome, dear wanderer! Come into my humble home. Take a rest, eat and drink.\"";
     next;
@@ -10,7 +28,6 @@
         "Thanks, that's very kind of you!", L_Thanks,
         "Can you teach me magic?", L_TeachRude,
         "Oh, shut up!", L_ShutUp;
-    goto L_Close;
 
 L_TeachRude:
     mes "[Old Wizard]";
@@ -31,10 +48,9 @@ L_Thanks:
             "Alright.", L_Agree,
             "I am studying magic, can you help?", L_NewStudent,
             "Your apprentice? ... No thanks.", L_Decline;
-    if (!@has_magic)
-        menu
-            "Alright.", L_Agree,
-            "Your apprentice? ... No thanks.", L_Decline;
+    menu
+        "Alright.", L_Agree,
+        "Your apprentice? ... No thanks.", L_Decline;
 
 L_Decline:
     mes "[Old Wizard]";
@@ -47,15 +63,14 @@ L_NewStudent:
     next;
 
     // check if the player has the knowledge of any skill
-    if (!(getskilllv(SKILL_POOL)))
-        menu
-            "That would be very kind of you!", L_TeachSpell,
-            "No, but thank you!", L_Decline;
     if (getskilllv(SKILL_POOL))
         menu
             "That would be very kind of you!", L_TeachSpell,
             "Actually I am looking for someone teaching me some more magic skills.", L_AstralSoul,
             "No, but thank you!", L_Decline;
+    menu
+        "That would be very kind of you!", L_TeachSpell,
+        "No, but thank you!", L_Decline;
 
 L_TeachSpell:
     mes "[Old Wizard]";
@@ -73,7 +88,7 @@ L_TeachSpell:
     if (getskilllv(SKILL_MAGIC_ASTRAL) >= 2)
         goto L_Close;
     mes "[Old Wizard]";
-    mes "\"I'm not sure if you are experienced enough to cast it yet, though.  You may need to first learn astral magic.\"";
+    mes "\"I'm not sure if you are experienced enough to cast it yet, though. You may need to first learn astral magic.\"";
     goto L_Close;
 
 L_AstralSoul:
@@ -84,8 +99,10 @@ L_AstralSoul:
     next;
     mes "\"To do so, I am in need of a pearl and about 100 acorns.\"";
     menu
-        "Here we go.", -,
+        "Here we go.", L_Next,
         "Ok be right back. I'll get them", L_Decline;
+
+L_Next:
     if (countitem("Pearl") < 1 || countitem("Acorn") < 100) goto L_NotEnough;
     delitem "Pearl", 1;
     delitem "Acorn", 100;

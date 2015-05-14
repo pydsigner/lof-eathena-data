@@ -1,0 +1,129 @@
+// Merchant got his shop shot down due to selling poison and asks the player for some errand
+// after finishing this, daily quest with scorpion stingers
+// Using bit 8 and 9 of QUEST_NorthTulimshar (first half of nibble 2)
+// author: Jenalya
+002-2,36,75,0|script|Imec|162
+{
+    set @state, ((QUEST_NorthTulimshar & TWOBIT_4_MASK) >> TWOBIT_4_SHIFT);
+    set @EXP, 90;
+    set @money, 500;
+    set @lvl, 10;
+
+    if (@state >= 3) goto L_Stingers;
+    if (@state == 2) goto L_Return;
+    if (@state == 1) goto L_Bring;
+
+    mes "[Imec]";
+    mes "%%9";
+    mes "\"The Wizard's Council shut down my shop!";
+    mes "Why'd they have to make such a fuss over a little poison?\"";
+    next;
+    mes "\"Someday, I'm going to get my permit back from those self-righteous snobs!\"";
+    next;
+    mes "He looks at you.";
+    next;
+    mes "[Imec]";
+    mes "%%D";
+    mes "\"Hey... I've got an idea!";
+    next;
+    mes "I just finished writing an appeal to the Council. If you bring it to the government building near the docks, they might be less... closed-minded.\"";
+    goto L_Offer;
+
+L_Offer:
+    menu
+        "Just tell me how to get there.",L_Explain,
+        "I'll do it.",L_Next,
+        "No way!",L_Close;
+
+L_Next:
+    mes "";
+    mes "[Imec]";
+    mes "\"Great! Here's the appeal.\"";
+    mes "Imec gives you a sealed letter, which you store in a safe pocket outside of your inventory.";
+    set @state, 1;
+    callsub S_Update_Mask;
+    goto L_Close;
+
+L_Explain:
+    mes "";
+    mes "[Imec]";
+    mes "\"Head north until you get to the docks – it's just west of the ferry.\"";
+    next;
+    mes "\"There are a couple of other offices inside. You can form a party if you want, but don't take too long.\"";
+    if (BaseLevel < WEDDING_MIN_LEVEL) mes "\"Once you're older, you can even get married there.\"";
+    next;
+    mes "\"So... will you submit my appeal for me?\"";
+    if (@state == 0)
+        goto L_Offer;
+    goto L_Close;
+
+L_Bring:
+    mes "[Imec]";
+    mes "\"What are you waiting for? I'm not paying you till after the job is done!\"";
+    menu
+        "Where is it again?",L_Explain,
+        "I'm on my way.",L_Close;
+
+L_Return:
+    mes "[Imec]";
+    mes "\"Ah! You're back! How'd it go?\"";
+    mes "You hand the letter of acknowledgment over to Imec.";
+    next;
+    mes "[Imec]";
+    mes "\"Great! I'm sure I'll be able to open my shop again soon.\"";
+    next;
+    mes "It seems as though Imec has lost interest in you already.";
+    menu
+        "You mentioned a reward...",L_Next1;
+
+L_Next1:
+    mes "";
+    mes "[Imec]";
+    mes "\"What? Oh, right. Here, have this.\"";
+    getexp @EXP, 0;
+    set Zeny, Zeny + @money;
+    set @state, 3;
+    callsub S_Update_Mask;
+    next;
+    if (BaseLevel >= @lvl)
+        goto L_Transition_Stingers;
+    if (BaseLevel < @lvl)
+        mes "\"Come back to see me once you grow stronger; I might have a job for you later on.\"";
+    goto L_Close;
+
+L_Transition_Stingers:
+    mes "\"Actually, you could be of further use to me.\"";
+    next;
+    goto L_Stingers;
+
+L_Stingers:
+    mes "[Imec]";
+    set @dq_level, @lvl;
+    set @dq_cost, 3;
+    set @dq_count, 3;
+    set @dq_name$, "ScorpionStinger";
+    set @dq_friendly_name$, "Scorpion Stingers";
+    set @dq_money, 200;
+    set @dq_exp, 40;
+
+    callfunc "DailyQuest";
+    goto L_Close;
+
+L_Close:
+    set @money, 0;
+    set @state, 0;
+
+    set @dq_level, 0;
+    set @dq_cost, 0;
+    set @dq_count, 0;
+    set @dq_name$, "";
+    set @dq_friendly_name$, "";
+    set @dq_money, 0;
+    set @dq_exp, 0;
+    set @dq_return, 0;
+    close;
+
+S_Update_Mask:
+    set QUEST_NorthTulimshar, (QUEST_NorthTulimshar & ~(TWOBIT_4_MASK)) | (@state << TWOBIT_4_SHIFT);
+    return;
+}

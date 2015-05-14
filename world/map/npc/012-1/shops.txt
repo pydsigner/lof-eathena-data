@@ -1,8 +1,8 @@
 //
 
-012-1.gat,36,99,0|shop|#FlowerShop|127,RedRose :-1,PinkRose :-1,YellowRose :-1,WhiteRose :-1,OrangeRose :-1,DarkRedRose :-1,RedTulip :-1,PinkTulip :-1,YellowTulip :-1,WhiteTulip :-1,OrangeTulip :-1
+012-1,36,99,0|shop|#FlowerShop|32767,RedRose:*1,PinkRose:*1,YellowRose:*1,WhiteRose:*1,OrangeRose:*1,DarkRedRose:*1,RedTulip:*1,PinkTulip:*1,YellowTulip:*1,WhiteTulip:*1,OrangeTulip:*1
 
-012-1.gat,36,99,0|script|Blossom|163,
+012-1,36,99,0|script|Blossom|163
 {
     mes "[Blossom]";
     mes "\"Hello, would you like to buy some flowers?\"";
@@ -12,6 +12,7 @@
         "Can I trade this Rose Hat for a differently colored one?", L_RoseHat;
 
 L_Shop:
+    close2;
     shop "#FlowerShop";
 
 L_RoseHat:
@@ -19,23 +20,27 @@ L_RoseHat:
     mes "[Blossom]";
     mes "\"Certainly, which color do you have?\"";
     menu
-        "A red one.", -,
-        "A white one.", -,
-        "A pink one.", -,
-        "A yellow one.", -,
-        "An orange one.", -,
-        "A blue one.", -;
+        "A red one.", L_MenuItems,
+        "A white one.", L_MenuItems,
+        "A pink one.", L_MenuItems,
+        "A yellow one.", L_MenuItems,
+        "An orange one.", L_MenuItems,
+        "A blue one.", L_MenuItems;
+
+L_MenuItems:
     set @have_id, @base_id + @menu - 1;
 
     mes "[Blossom]";
     mes "\"And which color would you like?\"";
     menu
-        "A red one.", -,
-        "A white one.", -,
-        "A pink one.", -,
-        "A yellow one.", -,
-        "An orange one.", -,
-        "A blue one.", -;
+        "A red one.", L_MenuItems1,
+        "A white one.", L_MenuItems1,
+        "A pink one.", L_MenuItems1,
+        "A yellow one.", L_MenuItems1,
+        "An orange one.", L_MenuItems1,
+        "A blue one.", L_MenuItems1;
+
+L_MenuItems1:
     set @receive_id, @base_id + @menu - 1;
 
     if (@have_id == @receive_id)

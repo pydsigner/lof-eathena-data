@@ -1,8 +1,10 @@
 // Annual Christmas
 // author: Jenalya, wushin
 
-030-2.gat,25,35,0|script|Vellamo|328,
+030-2,25,35,0|script|Vellamo|328
 {
+    set @halloween_npc_id, $@halloween_npc_vellamo;
+    callfunc "TrickOrTreat";
     callfunc "XmasStates";
 
     if($@xmas_time)
@@ -27,7 +29,9 @@ L_Helping:
     mes "\"Oh, hello. Visitors usually don't come down here in the basement. Here we store several things, materials for the presents, the finished presents, supplies.\"";
     menu
         "Nice. I have to go.", L_Close,
-        "Do you need help with anything?", -;
+        "Do you need help with anything?", L_Next;
+
+L_Next:
     mes "[Vellamo]";
     mes "\"Oh? You want to help us? Actually, there is one thing you could do. Did you see those weird slimes out there on the snow fields? Argh, I hate those creatures, last year they invaded the entire basement...\"";
     next;
@@ -46,7 +50,7 @@ L_Close:
     close;
 }
 
-030-2.gat,33,29,0|script|Ismo|329,
+030-2,33,29,0|script|Ismo|329
 {
     callfunc "XmasStates";
 

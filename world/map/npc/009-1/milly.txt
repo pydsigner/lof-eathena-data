@@ -6,10 +6,8 @@
 //
 // Inspector quest
 
-009-1.gat,81,41,0|script|Milly|114,
+009-1,81,41,0|script|Milly|114
 {
-    callfunc "ClearVariables";
-
     set @inspector, ((QUEST_Hurnscald & NIBBLE_3_MASK) >> NIBBLE_3_SHIFT);
 
     set @got_boneknife, ((QUEST_Forestbow_state & NIBBLE_2_MASK) >> NIBBLE_2_SHIFT) >= 4;
@@ -332,9 +330,10 @@ L_FinishedBad:
     callsub S_InspectorMaybe;
     mes "\"Won't you continue your travels soon?\"";
     menu
-        "That's what I'm going to do.", -,
+        "That's what I'm going to do.", L_Next,
         "I'm really sorry. Of course I want your hat!", L_Apologize;
 
+L_Next:
     mes "Milly looks away sadly.";
     goto L_Close;
 
@@ -384,7 +383,7 @@ L_Return:
     return;
 }
 
-009-1.gat,82,41,0|script|MillyDebugHelper|114,
+009-1,82,41,0|script|MillyDebugHelper|114
 {
     mes "You can set certain quests as finished or not finished. What would you like to do?";
     menu
@@ -458,4 +457,5 @@ L_Close:
 OnInit:
     if (!debug)
         disablenpc "MillyDebugHelper";
+    end;
 }

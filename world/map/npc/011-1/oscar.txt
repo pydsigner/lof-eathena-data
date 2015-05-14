@@ -24,20 +24,20 @@
 //  4: the player is asked to go refill water bottles
 //  5: various possible states here: the water bottles are refilled and the pumpkin spawns will start right away.
 //                                   the player will start by kafloshing ($@HalloweenQuest_PumpkinHunter$ == "")
-//  5 + $@HalloweenQuest_PumpkinHunter$ != "" : the player watered the patches (by kaflosh, or the farmer did). Pumpkins spawn.
+//  5 + $@HalloweenQuest_PumpkinHunter$ != "":* the player watered the patches (by kaflosh, or the farmer did). Pumpkins spawn.
 //  6: the player saved the farmer from the pumpkin invasion (all pumpkins / mobs killed)
 //  10: the player failed to save the farmer from the pumpkin invasion (player left the map, died -- logging off is allowed however)
 
-function|script|HalloweenQuestWaterPumpkins|,
+function|script|HalloweenQuestWaterPumpkins
 {
     if (Quest_Halloween != 5 || $@HalloweenQuest_PumpkinHunter$ != "")
         end;
     set $@HalloweenQuest_PumpkinHunter$, strcharinfo(0);
-    cmdothernpc "Oscar", "Spg";
+    donpcevent "Oscar::OnCommandSpg";
     end;
 }
 
-011-1.gat,94,38,0|script|Oscar|142,
+011-1,94,38,0|script|Oscar|142
 {
     // Check we are at the good time of the year
     if (!(gettime(6) == 11 && (gettime(5) >= 4 && gettime(5) <= 30))) goto L_NoEvent;
@@ -80,8 +80,10 @@ L_Introduce:
     next;
     mes "\"I just came back from a long trip... Really tiring, but so interesting.\"";
     menu
-        "Oh? Where did you go?", -,
+        "Oh? Where did you go?", L_Next,
         "Well... I believe.", L_End;
+
+L_Next:
     mes "[Oscar]";
     mes "\"Well, I travelled to the economic center of this continent.";
     mes "It's north-east of here. Quite far I must say.\"";
@@ -96,8 +98,10 @@ L_Introduce:
     mes "\"They taste really good you see, but ahah, they weren't really for eating at that moment!";
     mes "Anyway, I wondered if I could grow some here. Until now I only grow apples and oranges.\"";
     menu
-        "That's an interesting idea!", -,
+        "That's an interesting idea!", L_Next1,
         "Really, I hate pumpkins.", L_End;
+
+L_Next1:
     mes "[Oscar]";
     mes "\"However, I couldn't get any seeds, but I heard rumors in that city, saying we could find pumpkins in the forests north-east of here.";
     mes "Most likely there are pumpkin seeds laying around them.\"";
@@ -110,8 +114,10 @@ L_Introduce:
 
     mes "\"Do you think you can get some for me?\"";
     menu
-        "Sure. Leave it to me!", -,
+        "Sure. Leave it to me!", L_Next2,
         "Well, I don't have time for that right now.", L_End;
+
+L_Next2:
     mes "[Oscar]";
     mes "\"Thanks so much " + strcharinfo(0) + "!";
     mes "I can't wait to try them!\"";
@@ -164,8 +170,10 @@ L_HelpGrowSeeds:
         goto L_ProposeUseKaflosh;
     set @nature_magic, 0;
     menu
-        "Yeah sure!", -,
+        "Yeah sure!", L_Next3,
         "That sounds boring to do. No thanks.", L_End;
+
+L_Next3:
     getinventorylist;
     if (@inventorylist_count == 100 && countitem("EmptyBottle") == 0)
         goto L_InventoryFull;
@@ -176,9 +184,11 @@ L_HelpGrowSeeds:
 L_ProposeUseKaflosh:
     set @nature_magic, 0;
     menu
-        "Yeah sure!", -,
+        "Yeah sure!", L_Next4,
         "Maybe I can help you water them with magic!", L_WaterWithKaflosh,
         "That sounds boring to do. No thanks.", L_End;
+
+L_Next4:
     getinventorylist;
     if (@inventorylist_count == 100 && countitem("EmptyBottle") == 0)
         goto L_InventoryFull;
@@ -212,8 +222,10 @@ L_HelpFillWaters:
         goto L_WateringBusy;
     mes "\"So do you have the " + $@halloween_num_water_bottles + " bottles filled with fresh water?\"";
     menu
-        "Yes! Fresh and clear water.", -,
+        "Yes! Fresh and clear water.", L_Next5,
         "Oh, not yet. I'm on my way.", L_End;
+
+L_Next5:
     if (countitem("BottleOfWater") < $@halloween_num_water_bottles)
         goto L_NotEnoughWaters;
 
@@ -306,14 +318,21 @@ OnInit:
     end;
 
 OnTimer1000:
+    goto L_TimerFunction;
+
 OnTimer2000:
+    goto L_TimerFunction;
+
 OnTimer3000:
+    goto L_TimerFunction;
+
+L_TimerFunction:
     if ($@HalloweenQuest_PumpkinsState != 1)
         end;
     callsub S_CheckPlayer;
     set $@HalloweenQuest_PumpkinsTimer, $@HalloweenQuest_PumpkinsTimer + 1;
-    if (mobcount("011-1.gat", "Oscar::OnPD")  < 0 &&
-        mobcount("011-1.gat", "Oscar::OnPDP") < 0 &&
+    if (mobcount("011-1", "Oscar::OnPD")  < 0 &&
+        mobcount("011-1", "Oscar::OnPDP") < 0 &&
         $@HalloweenQuest_PumpkinsCount <= 0)
         goto L_AllPumpkinsDead;
     // A quick "cheer up"
@@ -321,7 +340,7 @@ OnTimer3000:
         npctalk "Hurry up " + $@HalloweenQuest_PumpkinHunter$ + "! My farm is being ruined!";
     // 7 mins max
     if ($@HalloweenQuest_PumpkinsTimer > 420)
-        goto L_PumpkinsRuinedEverything;
+        goto L_PumpkinsRuined;
 
     if (getnpctimer(0) >= 2900)
         goto L_TrySpawnPumpkin;
@@ -329,14 +348,14 @@ OnTimer3000:
 
 L_TrySpawnPumpkin:
     if ($@HalloweenQuest_PumpkinsCount > 0)
-        areamonster "011-1.gat", 97, 40, 101, 44, "", 1063, 1, "Oscar::OnPD";
+        areamonster "011-1", 97, 40, 101, 44, "", 1063, 1, "Oscar::OnPD";
     setnpctimer 0;
     end;
 
 OnTimer2500:
     if ($@HalloweenQuest_PumpkinsState != 0)
         end;
-    areamonster "011-1.gat", 97, 40, 101, 44, "", 1063, 2, "Oscar::OnPD";
+    areamonster "011-1", 97, 40, 101, 44, "", 1063, 2, "Oscar::OnPD";
     end;
 
 OnTimer6000:
@@ -369,13 +388,13 @@ OnPD:
         getitem "PumpkinHelmet", 1;
     // huntsman spider x1
     if (@halloween_rand < (15*BaseLevel)/100)
-        areamonster "011-1.gat", 97, 40, 101, 44, "", 1083, 1, "Oscar::OnPDP";
+        areamonster "011-1", 97, 40, 101, 44, "", 1083, 1, "Oscar::OnPDP";
     // Or spider x1
     if (@halloween_rand >= (15*BaseLevel)/100 && @halloween_rand < (75*BaseLevel)/100)
-        areamonster "011-1.gat", 97, 40, 101, 44, "", 1012, 1, "Oscar::OnPDP";
+        areamonster "011-1", 97, 40, 101, 44, "", 1012, 1, "Oscar::OnPDP";
     // Or archant x2
     if (@halloween_rand >= (75*BaseLevel)/100)
-        areamonster "011-1.gat", 97, 40, 101, 44, "", 1060, 2, "Oscar::OnPDP";
+        areamonster "011-1", 97, 40, 101, 44, "", 1060, 2, "Oscar::OnPDP";
 
     set @halloween_rand, 0;
     end;
@@ -385,10 +404,10 @@ OnPDP:
 
 L_KillBadHunter:
     misceffect FX_PUMPKIN_EXPLOSION, strcharinfo(0);
-    percentheal -100, 0;
+    heal -Hp, 0;
     end;
 
-L_PumpkinsRuinedEverything:
+L_PumpkinsRuined:
     npctalk "No! " + $@HalloweenQuest_PumpkinHunter$ + " how could you let that happen? All my farm is a mess now! All my trees are infested with bugs!";
     goto L_Fail;
 
@@ -400,7 +419,7 @@ S_CheckPlayer:
         goto L_PlayerOff;
     if (isdead())
         goto L_PlayerDead;
-    if (isin("011-1.gat",20,5,130,110) == 0)
+    if (isin("011-1",20,5,130,110) == 0)
         goto L_PlayerLeft;
     detachrid;
     return;
@@ -435,8 +454,8 @@ L_Success:
     goto L_Clean;
 
 L_Clean:
-    killmonster "011-1.gat", "Oscar::OnPD";
-    killmonster "011-1.gat", "Oscar::OnPDP";
+    killmonster "011-1", "Oscar::OnPD";
+    killmonster "011-1", "Oscar::OnPDP";
     set $@HalloweenQuest_PumpkinHunter$, "";
     set $@HalloweenQuest_PumpkinsCount, 0;
     set $@HalloweenQuest_PumpkinsState, 0;
@@ -489,5 +508,4 @@ L_InventoryFull:
     mes "\"Ah, but you cannot carry anything else!";
     mes "Make some room first.\"";
     goto L_End;
-
 }

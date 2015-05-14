@@ -1,6 +1,6 @@
 // author: Jenalya
 
-027-2.gat,118,23,0|script|Wolfgang|305,
+027-2,118,23,0|script|Wolfgang|305
 {
     set @Graveyard_Inn_MASK, NIBBLE_5_MASK;
     set @Graveyard_Inn_SHIFT, NIBBLE_5_SHIFT;
@@ -48,8 +48,7 @@ L_Bones:
             "Yes, here they are.",L_Bring,
             "Not yet.",L_Close;
     menu
-        "Not yet.",-;
-    goto L_Close;
+        "Not yet.",L_Close;
 
 L_Bring:
     if (countitem("AnimalBones") < @ANIMALBONES_AMOUNT)
@@ -86,8 +85,7 @@ L_Happy:
     mes "\"You will need " + @money + " GP.\"";
     menu
         "Sure, why not?",L_Game,
-        "No, thanks.",-;
-    goto L_Close;
+        "No, thanks.",L_Close;
 
 //The game mechanics is copied from casino.txt
 L_Game:
@@ -158,7 +156,6 @@ L_Ace:
     menu
         "Yes", L_Another,
         "No", L_End;
-    goto L_Close;
 
 L_Close:
     set @Graveyard_Inn_MASK, 0;
