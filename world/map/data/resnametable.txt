@@ -31,7 +31,7 @@
 011-1#011-1.wlk#
 011-1-night#011-1-night.wlk#
 011-3#011-3.wlk#
-011-3-night#011-3-night.wlk#
+011-3-night.gat#011-3-night.wlk#
 011-4#011-4.wlk#
 011-4-night#011-4-night.wlk#
 011-6#011-6.wlk#
@@ -107,5 +107,4 @@
 055-3#055-3.wlk#
 056-2#056-2.wlk#
 057-1#057-1.wlk#
-011-4-night#011-4-night.wlk#
 botcheck#botcheck.wlk#
