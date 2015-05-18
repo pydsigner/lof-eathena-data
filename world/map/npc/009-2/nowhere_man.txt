@@ -1,111 +1,120 @@
 //
 
-009-2.gat,33,94,0|script|Nowhere Man|153,{
-    set @Ironprice, 1000;
-    set @Sulphurprice, 1200;
-    set @Yellowpowderprice, 6500;
+009-2.gat,33,94,0|script|Nowhere Man|153
+{
+    set @IronPrice, 1000;
+    set @SulphurPrice, 1200;
+    set @YellowPowderPrice, 6500;
+    set @GlovesPrice, 3000;
    
     mes "[Nowhere Man]";
-    mes "\"Welcome! I am a transmuter and I will Transmute some items into other items, but at a cost.\"";
-    goto L_Trademenu;
+    mes "\"Welcome! I am a Transmuter. I can Transmute some items into other items, but at a cost.\"";
+    goto L_TradeMenu;
 
-L_Trademenu:
+L_TradeMenu:
     menu
-        "Can you make iron powder?", L_Iron,
-        "How about Sulphur Powder?", L_Sulphur,
-        "I need Yellow Powder", L_Healpots,
-        "Do you have gloves?", L_Gloves,
-        "I think I have everything I need, thanks.", -;
-    goto L_Close;
+        "Can you make Iron Powder?", L_Ask_IronPowder,
+        "How about Sulphur Powder?", L_Ask_SulphurPowder,
+        "I need Yellow Powder", L_Ask_HealPots,
+        "Do you have gloves?", L_Ask_Gloves,
+        "I think I have everything I need, thanks.", L_No;
 
-L_Iron:
+L_Ask_IronPowder:
     mes "[Nowhere Man]";
-    mes "\"I do have a few of those.  I will give you 4 Iron Powders for 1 Iron Ore and " + @Ironprice + "gp.\"";
+    mes "\"I do have a few of those.  I will give you 4 Iron Powders for 1 Iron Ore and " + @IronPrice + "gp.\"";
     menu
-        "Sure.", L_Ipowder,
-        "What a ripoff!  No way!", -;
-    goto L_Close;
+        "Sure.", L_Give_IronPowder,
+        "What a ripoff!  No way!", L_No;
 
-L_Sulphur:
+L_Ask_SulphurPowder:
     mes "[Nowhere Man]";
     mes "\"I can trade you 5 Sulphur Powders for 1 Pile of Ash and " + @Sulphurprice + "gp.\"";
     menu
-        "Here you go.", L_Spowder,
-        "Are you nuts?! Forget it!", -;
-    goto L_Close;
+        "Here you go.", L_Give_SulphurPowder,
+        "Are you nuts?! Forget it!", L_No;
 
-L_Healpots:
+L_Ask_HealPots:
     mes "[Nowhere Man]";
-    mes "\"Yellow powder can be used for spells, but isn't cheap, are you sure? Its " + @Yellowpowderprice + "gp and 3 hard spikes.\"";
+    mes "\"Yellow powder can be used for spells, but isn't cheap, are you sure? Its " + @YellowPowderPrice + "gp and 3 hard spikes.\"";
     menu
-        "Sure.", L_Pots,
-        "Whoa, that's way too much.", -;
-    goto L_Close;
+        "Sure.", L_Give_HealPots,
+        "Whoa, that's way too much.", L_No;
 
-L_Ipowder:
-    if (countitem("IronOre") < 1) goto L_Missing;
-    if (Zeny < @Ironprice) goto L_NotEnoughMoney;
+L_Ask_Gloves:
+    mes "[Nowhere Man]";
+    mes "\"Gloves? Sure, I sell fine leather gloves for only 3000 GP.\"";
+    menu
+        "Ok, that's a good deal", L_Give_Gloves,
+        "No gloves, lets see what else you have", L_TradeMenu,
+        "No thank you, maybe I will buy some later.", L_TradeMenu;
+
+L_Give_IronPowder:
+    if (countitem("IronOre") < 1)
+        goto L_Missing;
+    if (Zeny < @IronPrice)
+        goto L_NotEnoughMoney;
     getinventorylist;
-    if (@inventorylist_count == 100 && countitem("IronOre") > 1 && countitem("IronPowder") < 1) goto L_Full;
+    if (@inventorylist_count == 100 && countitem("IronOre") > 1 && countitem("IronPowder") < 1)
+        goto L_TooMany;
     delitem "IronOre", 1;
-    set Zeny, Zeny - @Ironprice;
+    set Zeny, Zeny - @IronPrice;
     getitem "IronPowder", 4;
     mes "[Nowhere Man]";
     mes "\"There you go.  Would you like to trade anything else?\"";
     menu
-        "Yes.", L_Trademenu,
+        "Yes.", L_TradeMenu,
         "No.", L_No;
-    goto L_Close;
 
-L_Spowder:
-    if (countitem("PileOfAsh") < 1) goto L_Missing;
-    if (Zeny < @Sulphurprice) goto L_NotEnoughMoney;
+L_Give_SulphurPowder:
+    if (countitem("PileOfAsh") < 1)
+        goto L_Missing;
+    if (Zeny < @SulphurPrice)
+        goto L_NotEnoughMoney;
     getinventorylist;
-    if (@inventorylist_count == 100 && countitem("PileOfAsh") > 1 && countitem("SulphurPowder") < 1) goto L_Full;
+    if (@inventorylist_count == 100 && countitem("PileOfAsh") > 1 && countitem("SulphurPowder") < 1)
+        goto L_TooMany;
     delitem "PileOfAsh", 1;
-    set Zeny, Zeny - @Sulphurprice;
+    set Zeny, Zeny - @SulphurPrice;
     getitem "SulphurPowder", 5;
     mes "[Nowhere Man]";
     mes "\"There you go.  Would you like to trade anything else?\"";
     menu
-        "Yes.", L_Trademenu,
+        "Yes.", L_TradeMenu,
         "No.", L_No;
-    goto L_Close;
 
-L_Pots:
-    if (countitem("Hardspike") < 3) goto L_Missing;
-    if (Zeny < @Yellowpowderprice) goto L_NotEnoughMoney;
+L_Give_HealPots:
+    if (countitem("HardSpike") < 3)
+        goto L_Missing;
+    if (Zeny < @YellowPowderPrice)
+        goto L_NotEnoughMoney;
     getinventorylist;
-    if (@inventorylist_count == 100 && countitem("Hardspike") > 3 && countitem("Yellowpowder") < 1) goto L_Full;
+    if (@inventorylist_count == 100 && countitem("HardSpike") > 3 && countitem("YellowPowder") < 1)
+        goto L_TooMany;
     delitem "Hardspike", 3;
-    set Zeny, Zeny - @Yellowpowderprice;
-    getitem "Yellowpowder", 1;
+    set Zeny, Zeny - @YellowPowderPrice;
+    getitem "YellowPowder", 1;
     mes "[Nowhere Man]";
     mes "\"There you go.  Would you like me to transmute anything else?\"";
     menu
-        "Yes.", L_Trademenu,
+        "Yes.", L_TradeMenu,
         "No.", L_No;
-    goto L_Close;
 
-L_Gloves:
-    if (Zeny < 3000)
-        goto L_Close;
+L_Give_Gloves:
+     if (Zeny < @GlovesPrice)
+        goto L_NotEnoughMoney;
     getinventorylist;
-    if (@inventorylist_count == 100 && countitem("Leathergloves") == 0)
+    if (@inventorylist_count == 100 && countitem("LeatherGloves") == 0)
         goto L_TooMany;
-    mes "[Nowhere Man]";
-    mes "\"Gloves? Sure, I sell fine leather gloves for only 3000 GP.\"";
-    menu
-        "Ok, that's a good deal", -,
-        "No gloves, lets see what else you have", L_Trademenu,
-        "No thank you, maybe I will buy some later.", L_Close;
     set Zeny, Zeny - 3000;
     getitem "LeatherGloves", 1;
     mes "[Nowhere Man]";
     mes "Thank you. I am sure you will get use from them";
-    close;
+    mes"\"Would you like me to transmute anything?\"";
+    menu
+        "Yes.", L_TradeMenu,
+        "No.", L_No;
 
-L_Full:
+L_TooMany:
     mes "[Nowhere Man]";
     mes "\"You must have been making a lot of trades...your bag is completely full!  Come back after you've made some room.\"";
     goto L_Close;
@@ -126,8 +135,9 @@ L_No:
     goto L_Close;
 
 L_Close:
-    set @Ironprice, 0;
-    set @Sulphurprice, 0;
-    set @Potionprice, 0;
+    set @IronPrice, 0;
+    set @SulphurPrice, 0;
+    set @PotionPrice, 0;
+    set @GlovesPrice, 0;
     close;
 }
