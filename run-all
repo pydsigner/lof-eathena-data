@@ -4,7 +4,9 @@ cd "$(dirname "$SELF")"
 
 trap 'kill %1 %2 %3' SIGHUP SIGINT SIGQUIT SIGABRT SIGTERM
 ( cd login && tmwa-login ) &
+sleep 2
 ( cd world && tmwa-char ) &
+sleep 2
 ( cd world/map && tmwa-map ) &
 
 wait
