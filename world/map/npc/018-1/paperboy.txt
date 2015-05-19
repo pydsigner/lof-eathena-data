@@ -148,7 +148,7 @@ L_HaveScroll:
     goto L_Close;
 
 L_Close: 
-    goto L_Close;
+    L_Close;
 
 
 }
