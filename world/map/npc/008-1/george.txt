@@ -66,7 +66,16 @@ L_Explain:
     mes "\"Arrr matey! I helped pioneer the trade routes between Hurnscald and the rest of the World, so now merchants and adventurers can travel to and fro without any hassle of dodging wolvern, yarr.\"";
     next;
     callfunc "FerryHelp";
+    if (GEORGE_Quest == 1)
+        goto L_Main2;
+    if (GEORGE_Quest == 2)
+        goto L_Main3;
+    if (GEORGE_Quest == 3)
+        goto L_Main5;
+    if (GEORGE_Quest == 4)
+        goto L_Main4;
     goto L_Main;
+
 
 // LoF Quests
 L_RequestOne:
@@ -96,6 +105,7 @@ L_ProgressOne:
     delitem "Beer", 30;
     delitem "BottleOfWater", 50;
     delitem "CasionCoins", 30;
+    mes "";
     mes "\"Here is a reward for your effort! Now you can be a true buckoneer!\"";
     getitem "SailorHat", 1;
     getexp 5000, 0;

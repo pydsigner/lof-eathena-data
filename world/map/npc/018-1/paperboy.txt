@@ -60,7 +60,7 @@ L_Success:
         goto L_HaveScroll;
     if (countitem("MoubooFigurine") < 1)
         goto L_NoMouboo;
-    if (countitem("Sailorhat") == 0)
+    if (countitem("SailorHat") == 0)
         goto L_StatNone;
     mes "[Roger]";
     mes "\"This is great! My collection of rare figurines is now complete.\"";
@@ -95,13 +95,15 @@ L_NoMouboo:
 L_StatNone:
     mes "\"You might have the Mouboo Figurine, but I don't trust everyone.\"";
     if(GEORGE_Quest >= 3)
-        goto L_Shat;
+        goto L_ShowHat;
     mes "\"My friend George is much older than I am, go see him and if he trusts you, so will I.\"";
-    set GEORGE_Quest, 1;
+    if (GEORGE_Quest < 2)
+        set GEORGE_Quest, 1;
     goto L_Close;
     
-L_Shat:    
+L_ShowHat:
     mes "\"I see you have met my good friend George, and you gave him some items that he needed...\"";
+    mes "";
     mes "\"Didn't he give you anything?\"";
     next;
     mes "\"If you could show me what he gave you, I might trust you.\"";
