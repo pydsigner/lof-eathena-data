@@ -1,0 +1,25 @@
+This repository is a fork of git://github.com/Pihro/lof-eathena-data.git ,
+which contains server-side data for running a game based on The Mana World
+called Land of Fire.
+
+Many quests are broken and many scripts need updating to run on newer
+versions of TMW's server software, called tmwAthena. I am working on both
+through the following changes:
+
+* Massive bug fixes to quest data
+* Minor updates to items_db and mobs_db to make them work on newer servers
+* Import new mobs and items from TMW
+* Import new functions from TMW
+* Ensure that everything is in place for a *potential* content-sync with TMW
+
+If you are interested in helping, I go by the name Itchy Demon in LoF and
+Piki on Freenode IRC. In addition, you may join #landoffire on Freenode to
+discuss in real-time with other LoF contributors on what needs done, and you
+may find a list of current (known) bugs on the LoF forum at:
+
+http://landoffire.org/forum/viewtopic.php?f=16&t=1477
+
+
+Cheers!
+
+--ItchyDemon
