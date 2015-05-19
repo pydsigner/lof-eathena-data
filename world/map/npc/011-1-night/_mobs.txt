@@ -4,7 +4,7 @@
 011-1-night.gat,0,0,0,0|monster|EvilMushroom|1013,30,0,0,Mob011-1-night::On1013
 011-1-night.gat,0,0,0,0|monster|BanditLord|1065,15,0,0,Mob011-1-night::On1065
 011-1-night.gat,0,0,0,0|monster|SpikyMushroom|1019,5,0,0,Mob011-1-night::On1019
-011-1-night.gat,0,0,0,0|monster|Reaper|1067,15,0,0,Mob011-1-night::On1067
+011-1-night.gat,0,0,0,0|monster|Reaper|1068,15,0,0,Mob011-1-night::On1068
 011-1-night.gat,0,0,0,0|monster|Archant|1060,5,0,10,Mob011-1-night::On1060
 011-1-night.gat,0,0,0,0|monster|Moggun|1061,20,0,0,Mob011-1-night::On1061
 011-1-night.gat,0,0,0,0|monster|CloverPatch|1037,2,0,1000,Mob011-1-night::On1037
@@ -51,8 +51,8 @@ On1065:
     callfunc "MobPoints";
     end;
 
-On1067:
-    set @mobID, 1067;
+On1068:
+    set @mobID, 1068;
     callfunc "MobPoints";
     end;
 

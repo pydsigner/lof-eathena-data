@@ -5,7 +5,7 @@
 008-1-night.gat,0,0,0,0|monster|Bandit|1064,30,20,0,Mob008-1-night::On1064
 008-1-night.gat,0,0,0,0|monster|BlueSpark|1080,10,0,20,Mob008-1-night::On1080
 008-1-night.gat,0,0,0,0|monster|RedSpark|1081,10,30,20,Mob008-1-night::On1081
-008-1-night.gat,0,0,0,0|monster|PunkSkeleton|1097,3,0,20,Mob008-1-night::On1097
+008-1-night.gat,0,0,0,0|monster|PunkSkeleton|8007,3,0,20,Mob008-1-night::On8007
 
 
 008-1-night.gat,0,0,0|script|Mob008-1-night|-1,
@@ -32,8 +32,8 @@ On1082:
     callfunc "MobPoints";
     end;
 
-On1097:
-    set @mobID, 1097;
+On8007:
+    set @mobID, 8007;
     callfunc "MobPoints";
     end;
 }
