@@ -10,11 +10,13 @@
 
     if ((TUT_var != 0) && !(FLAGS & FLAG_GOT_GRADUATIONCAP) && BaseLevel >= 10)
         goto L_Grad;
+    goto L_DoneGrad;
 
 L_DoneGrad:
     mes "[Ian the Guide]";
     mes "\"Would you like to know about something?\"";
     next;
+    goto L_Menu_A;
 
 L_Menu_A:
     menu
@@ -30,7 +32,6 @@ L_Menu_A:
         "Quick Keys", L_Key,
         "Laws", L_Laws,
         "I know everything!", L_Know;
-    close;
 
 L_Fight:
     mes "[Ian the Guide]";
@@ -98,7 +99,7 @@ L_Quests:
     mes "So be nice and help people along the way!\"";
     next;
     mes "[Ian the Guide]";
-    mes "\"If you are looking for a place to get started, I heard that the guard captain just outside the gates is looking for help.\"";
+    mes "\"If you are looking for a place to get started, I heard that the farmers just outside the gates are looking for help.\"";
     next;
     goto L_Menu_A;
 
@@ -124,7 +125,7 @@ L_Stats:
     mes "\"People vary greatly by how much strength, agility, dexterity, intelligence, vitality, and luck they have.\"";
     next;
     mes "[Ian the Guide]";
-    mes "\"Strength helps you carry items, and it also allows you to hit harder-- but it is not too helpful if you focus on missile weapons.";
+    mes "\"Strength helps you carry items, and it also allows you to hit harder – but it is not too helpful if you focus on missile weapons.";
     mes "More agility allows you to attack faster, and to dodge attacks more easily.";
     mes "Your dexterity determines how likely you are to hit a monster, and how effective you are with missile weapons.\"";
     next;
@@ -141,7 +142,9 @@ L_Stats:
 
 L_Magic:
     mes "[Ian the Guide]";
-    mes "\"In decades past, there was a Mana Seed south of Tulimshar, from which people could draw magical energies.  Unfortunately, the seed is gone.";
+    mes "\"The only active Mana Seed remaining is West of here somewhere, Ask Wyara, they may know more about it.\"";
+    next;
+    mes "\"In decades past, there was a Mana Seed in Tulimshar, from which people could draw magical energies. Unfortunately, the seed went dorment.";
     mes "However, I've overheard the bard mentioning something about this recently... if you are interested in magic, try talking to him!\"";
     next;
     goto L_Menu_A;
@@ -154,7 +157,7 @@ L_Key:
 
 L_Laws:
     mes "[Ian the Guide]";
-    mes "\"The constable can help you with them.\"";
+    callfunc "GameRules";
     next;
     goto L_Menu_A;
 
@@ -170,7 +173,7 @@ L_Grad:
     if (@inventorylist_count == 100) goto L_TooMany;
     mes "[Ian the Guide]";
     mes "\"Hey, you've been doing good, let me give you this.\"";
-    getitem "KnightsHelmet", 1;
+    getitem "GraduationCap", 1;
     set FLAGS, FLAGS | FLAG_GOT_GRADUATIONCAP;
     next;
     goto L_DoneGrad;
